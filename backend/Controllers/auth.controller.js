@@ -19,7 +19,7 @@ export const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new user using a raw SQL query
-        const [results, metadata] = await sequelize.query(
+        const [results] = await sequelize.query(
             'INSERT INTO users (charName, password, feeling, createdAt, updatedAt) VALUES (:charName, :password, :feeling, NOW(), NOW())',
             {
                 replacements: { charName, password: hashedPassword, feeling }
