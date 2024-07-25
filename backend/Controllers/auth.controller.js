@@ -15,6 +15,12 @@ export const signUp = async (req, res) => {
             return res.status(400).json({ error: 'Character name and password are required' });
         }
 
+        const query = 'SELECT * FROM users WHERE charName = :charName';
+        const user = await sequelize.query(query, { replacements: { charName } });
+        if(user){
+            return res.status(400).json({ error: 'Character name already exists' });
+        }
+
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
