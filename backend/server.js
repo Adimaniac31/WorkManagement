@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './Routes/auth.route.js'
 import {sync} from './sync.js'
+import sequelize from './sequelize.js';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ app.use(cors());
 async function connectToDatabase() {
     try {
         // Create the connection to the database
+        const query = `CREATE DATABASE IF NOT EXISTS ${process.env.DATABASE}`;
+        await sequelize.query(query);
         const connection = await mysql.createConnection({
             host: process.env.HOST,
             user: process.env.USER,
@@ -35,7 +38,7 @@ async function connectToDatabase() {
 }
 
 connectToDatabase();
-sync;
+sync;//To create tables like users
 
 app.use('/api/auth',authRoutes);
 
