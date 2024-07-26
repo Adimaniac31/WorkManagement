@@ -16,8 +16,12 @@ export const signUp = async (req, res) => {
         }
 
         const query = 'SELECT * FROM users WHERE charName = :charName';
-        const user = await sequelize.query(query, { replacements: { charName } });
-        if(user){
+        const user = await sequelize.query(query, { 
+            replacements: { charName },
+            type: sequelize.QueryTypes.SELECT 
+         });
+        console.log(user);
+        if(user.length>0){
             return res.status(400).json({ error: 'Character name already exists' });
         }
 
