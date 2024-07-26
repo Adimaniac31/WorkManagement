@@ -60,7 +60,7 @@ export const signIn = async (req, res) => {
         );
 
         if (!results || results.length === 0) {
-            return res.status(401).json({ error: 'Incorrect username' });
+            return res.status(401).json("error: 'Incorrect username'" );
         }
 
         const user = results;

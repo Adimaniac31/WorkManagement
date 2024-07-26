@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signUp, setCharName, setPassword, setFeelings } from '../features/authSlice';
 import signUpImage from '../assets/signup-image.webp';
+import { Link } from 'react-router-dom';
 
 const SignUpPage = () => {
   const dispatch = useDispatch();
@@ -12,13 +13,14 @@ const SignUpPage = () => {
     dispatch(signUp({ charName, password, feeling }));
   };
 
+  const errorMessage = JSON.stringify(error.error);
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center p-4 bg-gray-200">
       {/* Image Section */}
       <div className="w-full md:w-1/2 flex justify-center p-4">
-        <img 
-          src={signUpImage} 
-          alt="Sign Up" 
+        <img
+          src={signUpImage}
+          alt="Sign Up"
           className="w-full h-full object-cover rounded-lg shadow-md"
         />
       </div>
@@ -65,7 +67,7 @@ const SignUpPage = () => {
               placeholder="How are you feeling today? Or you can tell what you want to accomplish or anything you wish to."
             ></textarea>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center gap-2 w-full">
             <button
               type="submit"
               className="bg-orange hover:bg-darkPink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -73,8 +75,22 @@ const SignUpPage = () => {
               Sign Up
             </button>
           </div>
+          <div className='flex items-center flex-col justify-start gap-2'>
+            Already have an account?
+            <Link to="/signin">
+              <button
+                className='bg-orange hover:bg-darkPink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+              >
+                Sign In
+              </button>
+            </Link>
+          </div>
           {status === 'loading' && <p>Loading...</p>}
-          {status === 'failed' && <p>Error: {error}</p>}
+          {status === 'failed' && (
+            <p className="bg-red-100 text-red-800 border border-red-400 rounded-md p-4 mt-4">
+              Error: {errorMessage}
+            </p>
+          )}
         </form>
       </div>
     </div>
