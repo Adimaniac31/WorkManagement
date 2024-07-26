@@ -73,6 +73,21 @@ export const signIn = async (req, res) => {
             return res.status(401).json({ error: 'Incorrect Password' });
         }
 
+        // Update the latestSignIn field
+        await sequelize.query(
+            'UPDATE users SET latestSignIn = :latestSignIn WHERE id = :id',
+            { 
+                replacements: { latestSignIn: new Date(), id: user.id },
+                type: sequelize.QueryTypes.UPDATE
+            }
+        );
+
+        // Fetch the updated user record
+        const [updatedUser] = await sequelize.query(
+            'SELECT charName, latestSignIn, feeling FROM users WHERE id = :id',
+            { replacements: { id: user.id }, type: sequelize.QueryTypes.SELECT }
+        );
+
         // Generate a JWT token
         const token = jwt.sign(
             {
@@ -84,7 +99,7 @@ export const signIn = async (req, res) => {
         );
 
         // Respond with the JWT token
-        res.status(200).cookie('access_token',token,{httpOnly:true}).json('Token is saved in cookies');
+        res.status(200).cookie('access_token',token,{httpOnly:true}).json(updatedUser);
     } catch (err) {
         console.log('Error in signIn function:', err);
         res.status(500).json({ error: 'An error occurred while signing in' });

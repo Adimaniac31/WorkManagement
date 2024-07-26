@@ -21,6 +21,10 @@ const User = sequelize.define('User', {
     feeling: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    latestSignIn:{
+      type: DataTypes.DATE,
+      allowNull: True
     }
 }, {
   tableName: 'users',
