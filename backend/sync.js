@@ -1,4 +1,6 @@
 import sequelize from './sequelize.js'; // Adjust the path as necessary
+import Task from './Models/task.model.js';
+import User from './Models/user.model.js';
 
 export const sync = (async () => {
   try {
