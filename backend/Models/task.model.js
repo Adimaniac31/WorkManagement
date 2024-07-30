@@ -1,16 +1,12 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js';
-import User from './user.model.js'; // Import the User model
+import Plan from './plan.model.js'; // Import the Plan model
 
 const Task = sequelize.define('Task', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
-  },
-  planType: {
-    type: DataTypes.ENUM('week', 'month', 'year'),
-    allowNull: false
   },
   taskName: {
     type: DataTypes.STRING,
@@ -35,11 +31,11 @@ const Task = sequelize.define('Task', {
     allowNull: false,
     defaultValue: DataTypes.NOW
   },
-  userId: {
+  planId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: User,
+      model: Plan,
       key: 'id'
     }
   }
@@ -49,13 +45,14 @@ const Task = sequelize.define('Task', {
 });
 
 // Set up the relationship
-User.hasMany(Task, {
-  foreignKey: 'userId',
+Plan.hasMany(Task, {
+  foreignKey: 'planId',
   as: 'tasks'
 });
-Task.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'user'
+Task.belongsTo(Plan, {
+  foreignKey: 'planId',
+  as: 'plan'
 });
 
 export default Task;
+
