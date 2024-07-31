@@ -124,15 +124,6 @@ export const deleteUser = async (req, res) => {
     const { userId } = req.params;
   
     try {
-      // Validate input
-      if (!userId) {
-        return res.status(400).json({ error: 'User ID is required' });
-      }
-  
-      // Check if the user is trying to delete their own account
-      if (req.userId !== parseInt(userId)) {
-        return res.status(403).json({ error: 'You are not authorized to delete this user' });
-      }
   
       // Check if the user exists
       const userQuery = 'SELECT * FROM users WHERE id = :userId';

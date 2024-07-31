@@ -3,11 +3,6 @@ import sequelize from '../sequelize.js'; // Import the sequelize instance
 // Create a new task
 export const createTask = async (req, res) => {
   const { taskName, planId, taskType } = req.body;
-  const {userId} = req.params;
-
-  if (req.userId !== parseInt(userId)) {
-    return res.status(403).json({ error: 'You are not authorized to do operations on this user' });
- }
 
   try {
     // Check if the plan exists using a raw SQL query

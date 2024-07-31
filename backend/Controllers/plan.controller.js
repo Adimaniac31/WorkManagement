@@ -5,10 +5,6 @@ export const createPlan = async (req, res) => {
   const { planType} = req.body;
   const {userId} = req.params;
 
-  if (req.userId !== parseInt(userId)) {
-    return res.status(403).json({ error: 'You are not authorized to do operations on this user' });
- }
-
   try {
     // Check if the user exists using raw SQL query
     const userQuery = `SELECT * FROM users WHERE id = :userId`;
