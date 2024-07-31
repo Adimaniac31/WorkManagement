@@ -8,8 +8,11 @@ const Plan = sequelize.define('Plan', {
     autoIncrement: true,
     primaryKey: true
   },
+  planName:{
+    type: DataTypes.STRING
+  },
   planType: {
-    type: DataTypes.ENUM('week', 'month', 'year'),
+    type: DataTypes.ENUM('week', 'month'),
     allowNull: false
   },
   userId: {

@@ -119,3 +119,61 @@ export const signOut = async (req, res) => {
         console.log('Error while signing out!',error);
     }
 };
+
+export const deleteUser = async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      // Validate input
+      if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+      }
+  
+      // Check if the user is trying to delete their own account
+      if (req.userId !== parseInt(userId)) {
+        return res.status(403).json({ error: 'You are not authorized to delete this user' });
+      }
+  
+      // Check if the user exists
+      const userQuery = 'SELECT * FROM users WHERE id = :userId';
+      const user = await sequelize.query(userQuery, {
+        replacements: { userId },
+        type: sequelize.QueryTypes.SELECT
+      });
+  
+      if (user.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Delete all tasks related to the user's plans
+      const deleteTasksQuery = `
+        DELETE tasks FROM tasks
+        INNER JOIN plans ON tasks.planId = plans.id
+        WHERE plans.userId = :userId
+      `;
+      await sequelize.query(deleteTasksQuery, {
+        replacements: { userId },
+        type: sequelize.QueryTypes.DELETE
+      });
+  
+      // Delete all plans related to the user
+      const deletePlansQuery = 'DELETE FROM plans WHERE userId = :userId';
+      await sequelize.query(deletePlansQuery, {
+        replacements: { userId },
+        type: sequelize.QueryTypes.DELETE
+      });
+  
+      // Finally, delete the user
+      const deleteUserQuery = 'DELETE FROM users WHERE id = :userId';
+      await sequelize.query(deleteUserQuery, {
+        replacements: { userId },
+        type: sequelize.QueryTypes.DELETE
+      });
+  
+      res.status(200).json({ message: 'User and associated plans and tasks deleted successfully' });
+    } catch (error) {
+      console.log('Error in deleteUser function:', error);
+      res.status(500).json({ error: 'An error occurred while deleting the user' });
+    }
+  };
+  

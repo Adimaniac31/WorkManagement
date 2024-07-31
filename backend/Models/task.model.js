@@ -8,13 +8,13 @@ const Task = sequelize.define('Task', {
     autoIncrement: true,
     primaryKey: true
   },
+  taskType: {
+    type: DataTypes.ENUM('daily','week'),
+    allowNull: false
+  },
   taskName: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
   },
   completionStatus: {
     type: DataTypes.JSON,

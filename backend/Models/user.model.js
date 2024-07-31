@@ -25,7 +25,7 @@ const User = sequelize.define('User', {
     },
     latestSignIn:{
       type: DataTypes.DATE,
-      allowNull: True
+      allowNull: true
     }
 }, {
   tableName: 'users',
