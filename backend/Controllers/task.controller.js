@@ -40,3 +40,35 @@ export const createTask = async (req, res) => {
   }
 };
 
+// Delete a task by ID
+export const deleteTask = async (req, res) => {
+  const { taskId, userId } = req.params;
+
+  try {
+    // Check if the task exists and belongs to a plan of the user
+    const taskQuery = `
+      SELECT tasks.* FROM tasks 
+      INNER JOIN plans ON tasks.planId = plans.id 
+      WHERE tasks.id = :taskId AND plans.userId = :userId
+    `;
+    const task = await sequelize.query(taskQuery, {
+      replacements: { taskId, userId },
+      type: sequelize.QueryTypes.SELECT
+    });
+
+    if (task.length === 0) {
+      return res.status(404).json({ error: 'Task not found!' });
+    }
+
+    // Delete the task
+    const deleteTaskQuery = `DELETE FROM tasks WHERE id = :taskId`;
+    await sequelize.query(deleteTaskQuery, {
+      replacements: { taskId },
+      type: sequelize.QueryTypes.DELETE
+    });
+
+    res.status(200).json({ message: 'Task deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete task', details: error.message });
+  }
+};

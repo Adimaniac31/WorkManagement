@@ -12,7 +12,6 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ error: 'Unauthorized: Invalid token',err });
       }
       
-      // Store the user's ID in the request for use in the deleteUser function
       req.userId = decoded.id;
       next();
     });
