@@ -1,25 +1,21 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js';
-import Plan from './plan.model.js'; // Import the Plan model
+import Task from './task.model.js'; // Import the Task model
 
-const Task = sequelize.define('Task', {
+const DuplicateTask = sequelize.define('DuplicateTask', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  taskType: {
-    type: DataTypes.ENUM('daily','week'),
-    allowNull: false
-  },
-  taskName: {
-    type: DataTypes.STRING,
+  date: {
+    type: DataTypes.DATEONLY, // Stores only the date (YYYY-MM-DD)
     allowNull: false
   },
   completionStatus: {
     type: DataTypes.BOOLEAN,
-    allowNull: true,
-    defaultValue: {}
+    allowNull: false,
+    defaultValue: false
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -31,28 +27,27 @@ const Task = sequelize.define('Task', {
     allowNull: false,
     defaultValue: DataTypes.NOW
   },
-  planId: {
+  taskId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Plan,
+      model: Task,
       key: 'id'
     }
   }
 }, {
-  tableName: 'tasks',
+  tableName: 'duplicate_tasks',
   timestamps: true
 });
 
 // Set up the relationship
-Plan.hasMany(Task, {
-  foreignKey: 'planId',
-  as: 'tasks'
+Task.hasMany(DuplicateTask, {
+  foreignKey: 'taskId',
+  as: 'duplicateTasks'
 });
-Task.belongsTo(Plan, {
-  foreignKey: 'planId',
-  as: 'plan'
+DuplicateTask.belongsTo(Task, {
+  foreignKey: 'taskId',
+  as: 'task'
 });
 
-export default Task;
-
+export default DuplicateTask;

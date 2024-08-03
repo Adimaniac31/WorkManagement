@@ -72,3 +72,60 @@ export const deleteTask = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete task', details: error.message });
   }
 };
+
+export const updateTask = async (req, res) => {
+  const { taskId, userId } = req.params;
+  const { taskType, taskName, completionStatus } = req.body;
+
+  try {
+    // Find the task by id and validate user ownership
+    const [task] = await sequelize.query(
+      `SELECT t.*, p.userId AS planOwner 
+       FROM tasks t 
+       JOIN plans p ON t.planId = p.id 
+       WHERE t.id = :taskId AND p.userId = :userId`,
+      {
+        replacements: { taskId, userId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found or you are not authorized to update this task.' });
+    }
+
+    // Update the task with the new data
+    await sequelize.query(
+      `UPDATE tasks 
+       SET taskType = COALESCE(:taskType, taskType), 
+           taskName = COALESCE(:taskName, taskName), 
+           completionStatus = COALESCE(:completionStatus, completionStatus),
+           updatedAt = NOW()
+       WHERE id = :taskId`,
+      {
+        replacements: {
+          taskId,
+          taskType: taskType || null,
+          taskName: taskName || null,
+          completionStatus: completionStatus || null
+        },
+        type: sequelize.QueryTypes.UPDATE
+      }
+    );
+
+    // Return the updated task
+    const [updatedTask] = await sequelize.query(
+      `SELECT * FROM tasks WHERE id = :taskId`,
+      {
+        replacements: { taskId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    return res.status(200).json({ message: 'Task updated successfully.', task: updatedTask });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    return res.status(500).json({ message: 'An error occurred while updating the task.' });
+  }
+};
+
