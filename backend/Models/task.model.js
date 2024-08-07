@@ -19,7 +19,7 @@ const Task = sequelize.define('Task', {
   completionStatus: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
-    defaultValue: {}
+    defaultValue: false
   },
   createdAt: {
     type: DataTypes.DATE,

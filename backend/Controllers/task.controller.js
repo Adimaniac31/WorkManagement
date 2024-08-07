@@ -1,4 +1,5 @@
 import sequelize from '../sequelize.js'; // Import the sequelize instance
+import DuplicateTask from '../Models/duplicateTask.model.js';
 
 // Create a new task
 export const createTask = async (req, res) => {
@@ -22,7 +23,7 @@ export const createTask = async (req, res) => {
       VALUES (:taskName,:planId,:taskType, NOW(), NOW())
     `;
     await sequelize.query(taskQuery, {
-      replacements: { taskName,planId,taskType},
+      replacements: { taskName, planId, taskType },
       type: sequelize.QueryTypes.INSERT
     });
 
@@ -33,6 +34,23 @@ export const createTask = async (req, res) => {
     const newTask = await sequelize.query(newTaskQuery, {
       type: sequelize.QueryTypes.SELECT
     });
+
+    // If taskType is 'daily', create duplicate tasks based on planType
+    if (taskType === 'daily') {
+      const planType = plan[0].planType;
+      const duration = planType === 'week' ? 7 : 30; // Weekly or monthly duration
+      const currentDate = new Date();
+
+      for (let i = 0; i < duration; i++) {
+        const duplicateDate = new Date(currentDate);
+        duplicateDate.setDate(currentDate.getDate() + i);
+
+        await DuplicateTask.create({
+          date: duplicateDate.toISOString().split('T')[0],
+          taskId: newTask[0].id
+        });
+      }
+    }
 
     res.status(201).json(newTask[0]);
   } catch (error) {
@@ -60,6 +78,9 @@ export const deleteTask = async (req, res) => {
       return res.status(404).json({ error: 'Task not found!' });
     }
 
+    // Delete related duplicate tasks
+    await DuplicateTask.destroy({ where: { taskId } });
+
     // Delete the task
     const deleteTaskQuery = `DELETE FROM tasks WHERE id = :taskId`;
     await sequelize.query(deleteTaskQuery, {
@@ -67,7 +88,7 @@ export const deleteTask = async (req, res) => {
       type: sequelize.QueryTypes.DELETE
     });
 
-    res.status(200).json({ message: 'Task deleted successfully' });
+    res.status(200).json({ message: 'Task and related duplicate tasks deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete task', details: error.message });
   }
@@ -75,7 +96,7 @@ export const deleteTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   const { taskId, userId } = req.params;
-  const { taskType, taskName, completionStatus } = req.body;
+  const { taskName, completionStatus } = req.body;
 
   try {
     // Find the task by id and validate user ownership
@@ -97,21 +118,41 @@ export const updateTask = async (req, res) => {
     // Update the task with the new data
     await sequelize.query(
       `UPDATE tasks 
-       SET taskType = COALESCE(:taskType, taskType), 
-           taskName = COALESCE(:taskName, taskName), 
+       SET taskName = COALESCE(:taskName, taskName), 
            completionStatus = COALESCE(:completionStatus, completionStatus),
            updatedAt = NOW()
        WHERE id = :taskId`,
       {
         replacements: {
           taskId,
-          taskType: taskType || null,
           taskName: taskName || null,
           completionStatus: completionStatus || null
         },
         type: sequelize.QueryTypes.UPDATE
       }
     );
+
+    if (taskType === 'daily') {
+      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+      const [duplicateTask] = await DuplicateTask.findAll({
+        where: {
+          taskId: taskId,
+          date: today
+        }
+      });
+
+      if (duplicateTask) {
+        await DuplicateTask.update(
+          {
+            completionStatus: completionStatus || duplicateTask.completionStatus
+          },
+          {
+            where: { id: duplicateTask.id }
+          }
+        );
+      }
+    }
 
     // Return the updated task
     const [updatedTask] = await sequelize.query(
@@ -128,4 +169,3 @@ export const updateTask = async (req, res) => {
     return res.status(500).json({ message: 'An error occurred while updating the task.' });
   }
 };
-

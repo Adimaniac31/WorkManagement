@@ -43,7 +43,8 @@ export const createPlan = async (req, res) => {
 
 // Delete a plan by ID
 export const deletePlan = async (req, res) => {
-  const { planId,userId } = req.params;
+  const { planId, userId } = req.params;
+
   try {
     // Check if the plan exists and belongs to the user
     const planQuery = `SELECT * FROM plans WHERE id = :planId AND userId = :userId`;
@@ -56,12 +57,29 @@ export const deletePlan = async (req, res) => {
       return res.status(404).json({ error: 'Plan not found!' });
     }
 
-    // Delete associated tasks
-    const deleteTasksQuery = `DELETE FROM tasks WHERE planId = :planId`;
-    await sequelize.query(deleteTasksQuery, {
+    // Retrieve all tasks associated with the plan
+    const tasksQuery = `SELECT id FROM tasks WHERE planId = :planId`;
+    const tasks = await sequelize.query(tasksQuery, {
       replacements: { planId },
-      type: sequelize.QueryTypes.DELETE
+      type: sequelize.QueryTypes.SELECT
     });
+
+    // If there are associated tasks, delete their duplicate tasks first
+    if (tasks.length > 0) {
+      const taskIds = tasks.map(task => task.id);
+      const deleteDuplicateTasksQuery = `DELETE FROM duplicate_tasks WHERE taskId IN (:taskIds)`;
+      await sequelize.query(deleteDuplicateTasksQuery, {
+        replacements: { taskIds },
+        type: sequelize.QueryTypes.DELETE
+      });
+
+      // Delete associated tasks
+      const deleteTasksQuery = `DELETE FROM tasks WHERE planId = :planId`;
+      await sequelize.query(deleteTasksQuery, {
+        replacements: { planId },
+        type: sequelize.QueryTypes.DELETE
+      });
+    }
 
     // Delete the plan
     const deletePlanQuery = `DELETE FROM plans WHERE id = :planId`;
@@ -70,10 +88,11 @@ export const deletePlan = async (req, res) => {
       type: sequelize.QueryTypes.DELETE
     });
 
-    res.status(200).json({ message: 'Plan and associated tasks deleted successfully' });
+    res.status(200).json({ message: 'Plan and associated tasks, including duplicate tasks, deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete plan', details: error.message });
   }
 };
+
 
 

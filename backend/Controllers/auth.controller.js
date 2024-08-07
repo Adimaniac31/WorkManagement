@@ -124,7 +124,6 @@ export const deleteUser = async (req, res) => {
     const { userId } = req.params;
   
     try {
-  
       // Check if the user exists
       const userQuery = 'SELECT * FROM users WHERE id = :userId';
       const user = await sequelize.query(userQuery, {
@@ -136,23 +135,50 @@ export const deleteUser = async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
       }
   
-      // Delete all tasks related to the user's plans
-      const deleteTasksQuery = `
-        DELETE tasks FROM tasks
-        INNER JOIN plans ON tasks.planId = plans.id
-        WHERE plans.userId = :userId
-      `;
-      await sequelize.query(deleteTasksQuery, {
+      // Retrieve all plans related to the user
+      const plansQuery = 'SELECT id FROM plans WHERE userId = :userId';
+      const plans = await sequelize.query(plansQuery, {
         replacements: { userId },
-        type: sequelize.QueryTypes.DELETE
+        type: sequelize.QueryTypes.SELECT
       });
   
-      // Delete all plans related to the user
-      const deletePlansQuery = 'DELETE FROM plans WHERE userId = :userId';
-      await sequelize.query(deletePlansQuery, {
-        replacements: { userId },
-        type: sequelize.QueryTypes.DELETE
-      });
+      if (plans.length > 0) {
+        // Extract plan IDs
+        const planIds = plans.map(plan => plan.id);
+  
+        // Retrieve all task IDs associated with the user's plans
+        const tasksQuery = 'SELECT id FROM tasks WHERE planId IN (:planIds)';
+        const tasks = await sequelize.query(tasksQuery, {
+          replacements: { planIds },
+          type: sequelize.QueryTypes.SELECT
+        });
+  
+        if (tasks.length > 0) {
+          // Extract task IDs
+          const taskIds = tasks.map(task => task.id);
+  
+          // Delete all duplicate tasks related to the user's tasks
+          const deleteDuplicateTasksQuery = 'DELETE FROM duplicate_tasks WHERE taskId IN (:taskIds)';
+          await sequelize.query(deleteDuplicateTasksQuery, {
+            replacements: { taskIds },
+            type: sequelize.QueryTypes.DELETE
+          });
+  
+          // Delete all tasks related to the user's plans
+          const deleteTasksQuery = 'DELETE FROM tasks WHERE id IN (:taskIds)';
+          await sequelize.query(deleteTasksQuery, {
+            replacements: { taskIds },
+            type: sequelize.QueryTypes.DELETE
+          });
+        }
+  
+        // Delete all plans related to the user
+        const deletePlansQuery = 'DELETE FROM plans WHERE id IN (:planIds)';
+        await sequelize.query(deletePlansQuery, {
+          replacements: { planIds },
+          type: sequelize.QueryTypes.DELETE
+        });
+      }
   
       // Finally, delete the user
       const deleteUserQuery = 'DELETE FROM users WHERE id = :userId';
@@ -161,7 +187,7 @@ export const deleteUser = async (req, res) => {
         type: sequelize.QueryTypes.DELETE
       });
   
-      res.status(200).json({ message: 'User and associated plans and tasks deleted successfully' });
+      res.status(200).json({ message: 'User and all associated data deleted successfully' });
     } catch (error) {
       console.log('Error in deleteUser function:', error);
       res.status(500).json({ error: 'An error occurred while deleting the user' });
