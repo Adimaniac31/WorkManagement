@@ -6,6 +6,7 @@ const initialState = {
   charName: '',
   password: '',
   feeling: '',
+  userId: '', // Add userId to the initial state
   status: 'idle',
   error: ''
 };
@@ -52,6 +53,9 @@ const authSlice = createSlice({
     },
     setFeelings(state, action) {
       state.feeling = action.payload;
+    },
+    clearError(state) {
+      state.error = '';
     }
   },
   extraReducers: (builder) => {
@@ -72,6 +76,7 @@ const authSlice = createSlice({
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        state.userId = action.payload.userId; // Store userId in state
         // Optionally handle success (e.g., clear form or redirect)
       })
       .addCase(signIn.rejected, (state, action) => {
@@ -81,7 +86,8 @@ const authSlice = createSlice({
   }
 });
 
-export const { setCharName, setPassword, setFeelings } = authSlice.actions;
+export const { setCharName, setPassword, setFeelings, clearError } = authSlice.actions;
 
 export default authSlice.reducer;
+
 

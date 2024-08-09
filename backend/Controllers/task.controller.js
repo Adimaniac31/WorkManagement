@@ -169,3 +169,33 @@ export const updateTask = async (req, res) => {
     return res.status(500).json({ message: 'An error occurred while updating the task.' });
   }
 };
+
+export const getTodaysTasks = async (req, res) => {
+  const { userId } = req.params;
+  const today = new Date().toISOString().slice(0, 10);  // Format as YYYY-MM-DD
+
+  try {
+
+    const result = await sequelize.query(
+      `SELECT dt.*, t.taskName, t.completionStatus FROM duplicate_tasks dt
+      JOIN tasks t ON dt.taskId = t.id
+      WHERE dt.date = :today AND t.planId IN (
+        SELECT id FROM plans WHERE userId = :userId
+      )`,
+      {
+        replacements: { today, userId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No tasks found for today.' });
+    }
+
+    res.status(200).json({ tasks: result });
+
+  } catch (error) {
+    console.error('Error fetching today\'s tasks:', error);
+    res.status(500).json({ message: 'An error occurred while fetching today\'s tasks.' });
+  }
+};

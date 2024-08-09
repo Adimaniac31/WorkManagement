@@ -94,5 +94,32 @@ export const deletePlan = async (req, res) => {
   }
 };
 
+export const getUserTasksAndPlans = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await sequelize.query(
+      `SELECT p.*, t.* FROM plans p 
+      LEFT JOIN tasks t ON p.id = t.planId 
+      WHERE p.userId = :userId`,
+      {
+        replacements: { userId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No plans found for this user.' });
+    }
+
+    res.status(200).json({ plans: result });
+
+  } catch (error) {
+    console.error('Error fetching user tasks and plans:', error);
+    res.status(500).json({ message: 'An error occurred while fetching tasks and plans.' });
+  }
+};
+
+
 
 
