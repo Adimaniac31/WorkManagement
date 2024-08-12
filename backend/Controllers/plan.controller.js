@@ -2,11 +2,14 @@ import sequelize from '../sequelize.js'; // Import the sequelize instance
 
 // Create a new plan
 export const createPlan = async (req, res) => {
-  const { planType} = req.body;
-  const {userId} = req.params;
+  const { planType, planName } = req.body;
+  const { userId } = req.params;
 
   try {
     // Check if the user exists using raw SQL query
+    if(!planName || !planType){
+      return res.status(401).json({message: 'Please Add plan name and plan type!!',details: error});
+    }
     const userQuery = `SELECT * FROM users WHERE id = :userId`;
     const user = await sequelize.query(userQuery, {
       replacements: { userId },
@@ -19,11 +22,11 @@ export const createPlan = async (req, res) => {
 
     // Create the plan using raw SQL query
     const planQuery = `
-      INSERT INTO plans (planType, userId, createdAt, updatedAt)
-      VALUES (:planType, :userId, NOW(), NOW())
+      INSERT INTO plans (planType, userId, planName, createdAt, updatedAt)
+      VALUES (:planType, :userId,:planName, NOW(), NOW())
     `;
     await sequelize.query(planQuery, {
-      replacements: { planType, userId },
+      replacements: { planType, userId, planName },
       type: sequelize.QueryTypes.INSERT
     });
 
@@ -94,32 +97,18 @@ export const deletePlan = async (req, res) => {
   }
 };
 
-export const getUserTasksAndPlans = async (req, res) => {
-  const { userId } = req.params;
-
+export const getUserPlans = async (req, res) => {
   try {
-    const result = await sequelize.query(
-      `SELECT p.*, t.* FROM plans p 
-      LEFT JOIN tasks t ON p.id = t.planId 
-      WHERE p.userId = :userId`,
-      {
-        replacements: { userId },
-        type: sequelize.QueryTypes.SELECT
-      }
-    );
-
-    if (result.length === 0) {
-      return res.status(404).json({ message: 'No plans found for this user.' });
-    }
-
-    res.status(200).json({ plans: result });
-
-  } catch (error) {
-    console.error('Error fetching user tasks and plans:', error);
-    res.status(500).json({ message: 'An error occurred while fetching tasks and plans.' });
+    const { userId } = req.params;
+    const plansQuery = `SELECT * FROM plans WHERE userId = :userId`;
+    const plans = await sequelize.query(plansQuery, {
+      replacements: { userId },
+      type: sequelize.QueryTypes.SELECT
+    });
+    res.status(200).json({ plans });
+  }catch(error){
+    res.status(500).json({message: 'Error getting plans', details: error.message});
   }
 };
-
-
 
 

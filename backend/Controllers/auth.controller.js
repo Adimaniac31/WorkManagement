@@ -88,7 +88,7 @@ export const signIn = async (req, res) => {
 
         // Fetch the updated user record
         const [updatedUser] = await sequelize.query(
-            'SELECT charName, latestSignIn, feeling FROM users WHERE id = :id',
+            'SELECT charName, latestSignIn, feeling, id  FROM users WHERE id = :id',
             { replacements: { id: user.id }, type: sequelize.QueryTypes.SELECT }
         );
 
@@ -103,7 +103,10 @@ export const signIn = async (req, res) => {
         );
 
         // Respond with the JWT token
-        res.status(200).cookie('access_token',token,{httpOnly:true}).json(updatedUser);
+        res.status(200).json({
+          user: updatedUser,
+          token : token
+        });
     } catch (err) {
         console.log('Error in signIn function:', err);
         res.status(500).json({ error: 'An error occurred while signing in' });

@@ -6,7 +6,7 @@ const initialState = {
   charName: '',
   password: '',
   feeling: '',
-  userId: '', // Add userId to the initial state
+  userId: localStorage.getItem('userId') || '', // Add userId to the initial state
   status: 'idle',
   error: ''
 };
@@ -30,6 +30,7 @@ export const signUp = createAsyncThunk('auth/signUp', async (userData, { rejectW
 export const signIn = createAsyncThunk('auth/signIn', async (userData, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/auth/signin`, userData , {withCredentials: true});
+    localStorage.setItem('access_token', response.data.token);
     return response.data;
   } catch (err) {
     if (err.response && err.response.data) {
@@ -56,6 +57,11 @@ const authSlice = createSlice({
     },
     clearError(state) {
       state.error = '';
+    },
+    signOut(state) {
+      state.userId = '';
+      localStorage.removeItem('userId');
+      localStorage.removeItem('access_token');
     }
   },
   extraReducers: (builder) => {
@@ -76,8 +82,9 @@ const authSlice = createSlice({
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.userId = action.payload.userId; // Store userId in state
-        // Optionally handle success (e.g., clear form or redirect)
+        state.userId = action.payload.user.id;
+        state.feeling = action.payload.user.feeling;
+        localStorage.setItem('userId', action.payload.user.id);
       })
       .addCase(signIn.rejected, (state, action) => {
         state.status = 'failed';
@@ -86,7 +93,7 @@ const authSlice = createSlice({
   }
 });
 
-export const { setCharName, setPassword, setFeelings, clearError } = authSlice.actions;
+export const { setCharName, setPassword, setFeelings, clearError, signOut} = authSlice.actions;
 
 export default authSlice.reducer;
 
