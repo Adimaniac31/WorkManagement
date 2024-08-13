@@ -8,7 +8,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchPlans } from '../features/planSlice';
 import Plan from '../Components/TaskFormPageComponents/Plan';
-// import NewPlanForm from '../Components/TaskFormPageComponents/NewPlanForm';
 
 const TaskFormPage = () => {
   const userId = localStorage.getItem('userId');
@@ -28,11 +27,15 @@ const TaskFormPage = () => {
 
   return (
     <div className="min-h-screen p-4 bg-gray-100">
-      {/* <NewPlanForm userId={userId} /> */}
       <div className="flex flex-col items-center">
         {plans && plans.length > 0 ? (
           plans.map(plan => (
-            <Plan key={plan.id} plan={plan} />
+            <Plan 
+              key={plan.id} 
+              id={plan.id} 
+              planName={plan.planName} 
+              userId={userId} 
+            />
           ))
         ) : (
           <div className="text-center text-gray-600">No plans available</div>
@@ -43,6 +46,7 @@ const TaskFormPage = () => {
 };
 
 export default TaskFormPage;
+
 
 
 

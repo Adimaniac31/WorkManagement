@@ -201,21 +201,21 @@ export const getTodaysTasks = async (req, res) => {
 };
 
 export const getUserTasks = async (req, res) => {
-  const { userId } = req.params;
+  const { userId,planId } = req.params;
 
   try {
     const result = await sequelize.query(
       `SELECT p.*, t.* FROM plans p 
       LEFT JOIN tasks t ON p.id = t.planId 
-      WHERE p.userId = :userId`,
+      WHERE p.userId = :userId AND t.planID = :planId`,
       {
-        replacements: { userId },
+        replacements: { userId,planId },
         type: sequelize.QueryTypes.SELECT
       }
     );
 
     if (result.length === 0) {
-      return res.status(404).json({ message: 'No plans found for this user.' });
+      return res.status(404).json({ message: 'No tasks found for this user on this plan.' });
     }
 
     res.status(200).json({ tasks: result });

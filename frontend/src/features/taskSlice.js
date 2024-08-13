@@ -2,11 +2,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const getToken = () => localStorage.getItem('access_token');
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-export const fetchTasks = createAsyncThunk('plans/fetchPlans', async (userId) => {
+export const fetchTasks = createAsyncThunk('plans/fetchTasks', async ({userId,planId}) => {
   const token = getToken();
-  const response = await axios.get(`${BACKEND_URL}/api/plan/get-tasks-plans/${userId}`,{
+  const response = await axios.get(`${BACKEND_URL}/api/task/get-tasks/${userId}/${planId}`,{
     headers: {
         'Authorization': `Bearer ${token}`
     }
@@ -15,17 +16,32 @@ export const fetchTasks = createAsyncThunk('plans/fetchPlans', async (userId) =>
 });
 
 export const createTask = createAsyncThunk('tasks/createTask', async ({ userId, taskName, planId, taskType }) => {
-  const response = await axios.post(`${BACKEND_URL}/api/task/create-task/${userId}`, { taskName, planId, taskType });
+  const token = getToken();
+  const response = await axios.post(`${BACKEND_URL}/api/task/create-task/${userId}`, { taskName, planId, taskType },{
+    headers: {
+      'Authorization': `Bearer ${token()}`
+    }
+  });
   return response.data;
 });
 
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async ({ userId, taskId }) => {
-  await axios.delete(`${BACKEND_URL}/api/task/delete-task/${userId}/${taskId}`);
+  const token = getToken();
+  await axios.delete(`${BACKEND_URL}/api/task/delete-task/${userId}/${taskId}`,{
+    headers: {
+      'Authorization': `Bearer ${token()}`
+    }
+  });
   return taskId;
 });
 
 export const updateTask = createAsyncThunk('tasks/updateTask', async ({ userId, taskId, taskData }) => {
-  const response = await axios.post(`${BACKEND_URL}/api/task/update-task/${userId}/${taskId}`, taskData);
+  const token = getToken();
+  const response = await axios.post(`${BACKEND_URL}/api/task/update-task/${userId}/${taskId}`, {taskData},{
+    headers: {
+      'Authorization': `Bearer ${token()}`
+    }
+  });
   return response.data.task;
 });
 
@@ -39,6 +55,18 @@ const taskSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchTasks.pending,(state,action) => {
+        state.status = 'loading'
+
+      })
+      .addCase(fetchTasks.fulfilled,(state,action) => {
+        state.status = 'succeeded',
+        state.tasks = action.payload.tasks;
+      })
+      .addCase(fetchTasks.rejected,(state,action) => {
+        state.status = 'rejected',
+        state.error = action.error.message;
+      })
       .addCase(createTask.fulfilled, (state, action) => {
         state.tasks.push(action.payload);
       })

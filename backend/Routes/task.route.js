@@ -9,6 +9,6 @@ router.post("/create-task/:userId",verifyToken,authUser,createTask);
 router.delete("/delete-task/:userId/:taskId",verifyToken,authUser,deleteTask);
 router.post("/update-task/:userId/:taskId",verifyToken,authUser,updateTask);
 router.get("/todays-tasks/:userId", verifyToken, authUser, getTodaysTasks);
-router.get("/get-tasks/:userId", verifyToken, authUser, getUserTasks);
+router.get("/get-tasks/:userId/:planId", verifyToken, authUser, getUserTasks);
 
 export default router;
