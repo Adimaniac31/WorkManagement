@@ -7,7 +7,7 @@ export const authUser = (req, res, next) => {
         }
 
         if (req.userId !== parseInt(userId)) {
-            return res.status(403).json({ error: 'You are not authorized to do operations on this user' });
+            return res.status(403).json({ error: 'You are not authorized to do operations on this user,Try signing again!!!' });
         }
     } catch (err) {
         return res.status(500).json({ error: 'Authentication failed!!!' });
