@@ -68,13 +68,14 @@ const TaskFormPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 bg-gray-100">
+    <div className="min-h-screen p-6 bg-background">
       {isCreatingPlan ? (
-        <CreatePlan onCreatePlan={handleCreatePlan} onClose={handleCloseCreatePlan} />
+        <CreatePlan onCreatePlan={handleCreatePlan} onClose={handleCloseCreatePlan}
+        />
       ) : (
         <button
           onClick={() => setIsCreatingPlan(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-4"
+          className="bg-backgroundBtn text-white px-6 py-3 rounded-lg hover:bg-[#ce4263] mb-6 font-serif"
         >
           Add a Plan
         </button>
@@ -84,16 +85,17 @@ const TaskFormPage = () => {
         <CreateTask planId={currentPlanId} onAddTask={handleAddTask} onClose={handleCloseCreateTask} />
       )}
 
-      {formError && <div className="text-center text-red-600">{formError}</div>}
+      {formError && <div className="text-center text-red-700 font-semibold mb-4">{formError}</div>}
 
-      <div className="flex flex-col items-center mt-4">
-        {planStatus === 'loading' && <div className="text-center text-gray-700">Loading...</div>}
-        {planStatus === 'failed' && <div className="text-center text-red-600">Error: {error}</div>}
+      <div className="flex flex-col flex-start mt-6 gap-2">
+      <h1 className='text-2xl font-bold text-black mb-2 font-serif'>Your Plans :</h1>
+        {planStatus === 'loading' && <div className="text-center text-gray-700 font-medium">Loading...</div>}
+        {planStatus === 'failed' && <div className="text-center text-red-700 font-medium">Error: {error}</div>}
         {plans.length === 0 && planStatus === 'succeeded' && (
-          <div className="text-center text-gray-700">No plans available.</div>
+          <div className="text-center text-gray-600 font-medium">No plans available.</div>
         )}
         {plans.map(plan => (
-          <div key={plan.id} className="mb-4">
+          <div key={plan.id} className="mb-6 w-full">
             <Plan
               id={plan.id}
               plan={plan}

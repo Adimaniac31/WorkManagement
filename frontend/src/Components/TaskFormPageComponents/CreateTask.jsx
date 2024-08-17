@@ -30,8 +30,8 @@ const CreateTask = ({ planId, onAddTask, onClose }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 mb-4 w-full max-w-md">
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">Add Tasks to Plan</h3>
+    <div className="bg-gray-100 shadow-md rounded-lg p-4 mb-4 w-full max-w-md">
+      <h3 className="text-2xl font-semibold text-gray-800 mb-2">Add Tasks to Plan</h3>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit}>
         {tasks.map((task, index) => (
@@ -43,7 +43,7 @@ const CreateTask = ({ planId, onAddTask, onClose }) => {
                 onClick={() => handleRemoveTask(index)}
                 className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600"
               >
-                Close
+                Remove
               </button>
             </div>
             <input
@@ -74,20 +74,20 @@ const CreateTask = ({ planId, onAddTask, onClose }) => {
           <button
             type="button"
             onClick={handleAddTask}
-            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mr-2"
+            className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 mr-2"
           >
             Add Another Task
           </button>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+            className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600"
           >
             Done
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+            className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
           >
             Close
           </button>
@@ -98,6 +98,9 @@ const CreateTask = ({ planId, onAddTask, onClose }) => {
 };
 
 export default CreateTask;
+
+
+
 
 
 

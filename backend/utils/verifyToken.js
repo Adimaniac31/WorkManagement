@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
   
     jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-        return res.status(401).json({ error: 'Unauthorized: Invalid token',err });
+        return res.status(401).json({ error: 'Unauthorized: Invalid token',message:'Try Signing Again',err });
       }
       
       req.userId = decoded.id;

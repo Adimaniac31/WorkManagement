@@ -22,8 +22,8 @@ const CreatePlan = ({ onCreatePlan, onClose }) => {
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 mb-4 w-full max-w-md">
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">Create New Plan</h3>
+    <div className="bg-gray-100 shadow-md rounded-lg p-4 mb-4 w-full max-w-md">
+      <h3 className="text-2xl font-semibold text-gray-800 mb-2">Create New Plan</h3>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -51,14 +51,14 @@ const CreatePlan = ({ onCreatePlan, onClose }) => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mr-2"
+          className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 mr-2"
         >
           Create Plan
         </button>
         <button
           type="button"
           onClick={handleClose}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+          className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
         >
           Close
         </button>
@@ -68,6 +68,9 @@ const CreatePlan = ({ onCreatePlan, onClose }) => {
 };
 
 export default CreatePlan;
+
+
+
 
 
 
