@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUpPage from './Pages/SignUpPage';
 import SignInPage from './Pages/SignInPage';
 import TaskFormPage from './Pages/TaskFormPage';
+import ChatPage from './Pages/chatPage';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/taskform-page" element={<TaskFormPage/>} />
+          <Route path="/chat" element={<ChatPage />} />
         </Routes>
       </div>
     </Router>

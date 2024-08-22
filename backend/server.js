@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './Routes/auth.route.js'
 import taskRoutes from './Routes/task.route.js'
 import planRoutes from './Routes/plan.route.js'
+import chatRoutes from './Routes/chat.route.js'
 import {sync} from './sync.js'
 import sequelize from './sequelize.js';
 
@@ -48,9 +49,12 @@ sync;//To create tables like users
 app.use('/api/auth',authRoutes);
 app.use('/api/task',taskRoutes);
 app.use('/api/plan',planRoutes);
+app.use('/api/msg',chatRoutes);
+
 
 const PORT = process.env.PORT_SERVER;
 app.listen(PORT,() => {
     console.log(`Server running on port ${PORT}`);
 });
+  
 
