@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './Routes/auth.route.js'
 import taskRoutes from './Routes/task.route.js'
 import planRoutes from './Routes/plan.route.js'
-import chatRoutes from './Routes/chat.route.js'
+import chatRoutes from './Routes/chats.route.js'
 import {sync} from './sync.js'
 import sequelize from './sequelize.js';
 
