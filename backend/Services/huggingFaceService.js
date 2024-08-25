@@ -5,12 +5,8 @@ const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 export const chatWithHuggingFace = async (userMessage) => {
   try {
     const response = await hf.textGeneration({
-      model: 'EleutherAI/gpt-neo-2.7B', // Replace with a preferred model
-      inputs: userMessage,
-      parameters: {
-        max_length: 300, // Adjust based on the expected length of the response
-        // temperature: 0.7,
-      },
+      model: 'mistralai/Mixtral-8x7B-Instruct-v0.1', // Replace with a preferred model
+      inputs: userMessage
     });
 
     return response.generated_text || 'Error: No response from the AI';
