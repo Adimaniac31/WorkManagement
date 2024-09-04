@@ -65,7 +65,7 @@ const CreateTask = ({ planId, onAddTask, onClose }) => {
               >
                 <option value="" disabled>Select task type</option>
                 <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
+                <option value="week">Weekly</option>
               </select>
             </div>
           </div>

@@ -5,8 +5,8 @@ import axios from 'axios';
 const initialState = {
   charName: '',
   password: '',
-  feeling: '',
-  userId: localStorage.getItem('userId') || '', // Add userId to the initial state
+  feeling: localStorage.getItem('feeling') || '', // Read feeling from localStorage
+  userId: localStorage.getItem('userId') || '',
   status: 'idle',
   error: ''
 };
@@ -20,7 +20,6 @@ export const signUp = createAsyncThunk('auth/signUp', async (userData, { rejectW
     return response.data;
   } catch (err) {
     if (err.response && err.response.data) {
-      // Return the error message from the server response
       return rejectWithValue(err.response.data);
     }
     return rejectWithValue(err.message);
@@ -29,12 +28,12 @@ export const signUp = createAsyncThunk('auth/signUp', async (userData, { rejectW
 
 export const signIn = createAsyncThunk('auth/signIn', async (userData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/auth/signin`, userData , {withCredentials: true});
+    const response = await axios.post(`${BACKEND_URL}/api/auth/signin`, userData, { withCredentials: true });
     localStorage.setItem('access_token', response.data.token);
+    localStorage.setItem('feeling', response.data.user.feeling); // Save feeling to localStorage
     return response.data;
   } catch (err) {
     if (err.response && err.response.data) {
-      // Return the error message from the server response
       return rejectWithValue(err.response.data);
     }
     return rejectWithValue(err.message);
@@ -54,14 +53,17 @@ const authSlice = createSlice({
     },
     setFeelings(state, action) {
       state.feeling = action.payload;
+      localStorage.setItem('feeling', action.payload); // Save feeling to localStorage
     },
     clearError(state) {
       state.error = '';
     },
     signOut(state) {
       state.userId = '';
+      state.feeling = ''; // Clear feeling
       localStorage.removeItem('userId');
       localStorage.removeItem('access_token');
+      localStorage.removeItem('feeling'); // Remove feeling from localStorage
     }
   },
   extraReducers: (builder) => {
@@ -71,7 +73,6 @@ const authSlice = createSlice({
       })
       .addCase(signUp.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        // Optionally handle success (e.g., clear form or redirect)
       })
       .addCase(signUp.rejected, (state, action) => {
         state.status = 'failed';
@@ -93,8 +94,9 @@ const authSlice = createSlice({
   }
 });
 
-export const { setCharName, setPassword, setFeelings, clearError, signOut} = authSlice.actions;
+export const { setCharName, setPassword, setFeelings, clearError, signOut } = authSlice.actions;
 
 export default authSlice.reducer;
+
 
 

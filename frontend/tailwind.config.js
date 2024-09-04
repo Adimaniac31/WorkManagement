@@ -18,8 +18,24 @@ export default {
         backgroundBtnCorrect: '#A91D3A',
         backgroundBtnIncorrect: '#151515',
       },
+      fontFamily: {
+        serif: ['Merriweather', 'serif'],
+        sans: ['Inter', 'sans-serif'],
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        fadeInDelayed: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 1s ease-out forwards',
+      },
     },
   },
   plugins: [],
-}
-
+};

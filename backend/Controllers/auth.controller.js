@@ -114,14 +114,18 @@ export const signIn = async (req, res) => {
 };
 
 export const signOut = async (req, res) => {
-    try{
-        res.clearCookie('access_token');
-        res.status(200).json({message:'Sign Out Successfully!'});
-    }
-    catch(error){
-        console.log('Error while signing out!',error);
-    }
+  try {
+      // Clear the access_token from local storage
+      localStorage.removeItem('access_token');
+      
+      // Send a success response
+      res.status(200).json({ message: 'Sign Out Successfully!' });
+  } catch (error) {
+      console.log('Error while signing out!', error);
+      res.status(500).json({ message: 'Error while signing out!' });
+  }
 };
+
 
 export const deleteUser = async (req, res) => {
     const { userId } = req.params;

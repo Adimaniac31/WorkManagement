@@ -225,3 +225,58 @@ export const getUserTasks = async (req, res) => {
     res.status(500).json({ message: 'An error occurred while fetching tasks and plans.' });
   }
 };
+
+// Get all daily tasks for a user
+export const getUserAllDailyTasks = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await sequelize.query(
+      `SELECT t.*, p.planName FROM tasks t
+       JOIN plans p ON t.planId = p.id
+       WHERE t.taskType = 'daily' AND p.userId = :userId`,
+      {
+        replacements: { userId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No daily tasks found for this user.' });
+    }
+
+    res.status(200).json({ tasks: result });
+
+  } catch (error) {
+    console.error('Error fetching daily tasks:', error);
+    res.status(500).json({ message: 'An error occurred while fetching daily tasks.' });
+  }
+};
+
+// Get all weekly tasks for a user
+export const getUserAllWeeklyTasks = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await sequelize.query(
+      `SELECT t.*, p.planName FROM tasks t
+       JOIN plans p ON t.planId = p.id
+       WHERE t.taskType = 'week' AND p.userId = :userId`,
+      {
+        replacements: { userId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No weekly tasks found for this user.' });
+    }
+
+    res.status(200).json({ tasks: result });
+
+  } catch (error) {
+    console.error('Error fetching weekly tasks:', error);
+    res.status(500).json({ message: 'An error occurred while fetching weekly tasks.' });
+  }
+};
+

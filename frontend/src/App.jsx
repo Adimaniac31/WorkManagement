@@ -5,12 +5,14 @@ import SignUpPage from './Pages/SignUpPage';
 import SignInPage from './Pages/SignInPage';
 import TaskFormPage from './Pages/TaskFormPage';
 import ChatPage from './Pages/chatPage';
+import HomePage from './Pages/HomePage';
 
 const App = () => {
   return (
     <Router>
       <div>
         <Routes>
+          <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/taskform-page" element={<TaskFormPage/>} />
