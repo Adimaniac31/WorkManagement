@@ -52,10 +52,10 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-textPrimary flex p-8">
-      <div className="w-2/3 pr-8 space-y-16">
+    <div className="min-h-screen bg-gray-100 text-gray-900 flex flex-col md:flex-row p-8">
+      <div className="flex-1 md:pr-8 space-y-16">
         {userId ? (
-          plans.length === 0 && (dailyTasks.length === 0 && weeklyTasks.length === 0) ? (
+          plans.length === 0 && dailyTasks.length === 0 && weeklyTasks.length === 0 ? (
             <div className="p-8 text-center">
               <h2 className="text-3xl font-bold mb-6">You have no tasks or plans yet</h2>
               <p className="text-xl">
@@ -67,20 +67,20 @@ const HomePage = () => {
             </div>
           ) : (
             <>
-              <section id="dailyTasks" className="flex items-center" onMouseEnter={() => handleSectionChange('dailyTasks')}>
-                <div className="w-full">
+              <section id="dailyTasks" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('dailyTasks')}>
+                <div className="w-full max-w-3xl mx-auto">
                   <DailyTasks tasks={dailyTasks} />
                 </div>
               </section>
 
-              <section id="weeklyPlans" className="flex items-center" onMouseEnter={() => handleSectionChange('weeklyPlans')}>
-                <div className="w-full">
+              <section id="weeklyPlans" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('weeklyPlans')}>
+                <div className="w-full max-w-3xl mx-auto">
                   <WeeklyPlans plans={weeklyTasks} />
                 </div>
               </section>
 
-              <section id="planList" className="flex items-center" onMouseEnter={() => handleSectionChange('planList')}>
-                <div className="w-full">
+              <section id="planList" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('planList')}>
+                <div className="w-full max-w-3xl mx-auto">
                   <PlanList plans={plans} />
                 </div>
               </section>
@@ -90,17 +90,15 @@ const HomePage = () => {
           <SignInPrompt />
         )}
 
-        <section id="mindfulnessContent" className="flex items-center" onMouseEnter={() => handleSectionChange('mindfulnessContent')}>
-          <div className="w-full">
-            <MindfulnessContent />
-          </div>
+        <section id="mindfulnessContent" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('mindfulnessContent')}>
+          <MindfulnessContent />
         </section>
 
         <PageLinks />
       </div>
 
-      <div className="w-1/3 sticky top-8 h-screen flex justify-center items-start">
-        <div className="w-5/6 h-auto p-6 rounded-md shadow-lg bg-white">
+      <div className="hidden md:block md:w-1/3 flex-shrink-0 sticky top-8 h-screen flex justify-center items-start">
+        <div className="w-full h-auto p-6 rounded-md shadow-lg bg-white">
           <img src={videoSource} alt="Section video" className="w-full h-auto rounded-md" />
         </div>
       </div>
