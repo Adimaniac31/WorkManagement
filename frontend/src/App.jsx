@@ -1,5 +1,5 @@
 // src/App.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUpPage from './Pages/SignUpPage';
 import SignInPage from './Pages/SignInPage';
@@ -8,6 +8,14 @@ import ChatPage from './Pages/chatPage';
 import HomePage from './Pages/HomePage';
 
 const App = () => {
+  useEffect(() => {
+    // This will trigger when the tab or window is closed
+    window.onunload = function () {
+      // Clear the localStorage when the tab is closed
+      localStorage.clear();
+    };
+  }, []); // Empty array ensures the effect runs only once
+
   return (
     <Router>
       <div>
@@ -15,7 +23,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
-          <Route path="/taskform-page" element={<TaskFormPage/>} />
+          <Route path="/taskform-page" element={<TaskFormPage />} />
           <Route path="/chat" element={<ChatPage />} />
         </Routes>
       </div>
@@ -24,4 +32,3 @@ const App = () => {
 };
 
 export default App;
-

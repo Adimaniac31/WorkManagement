@@ -2,19 +2,39 @@ import React from 'react';
 
 const MindfulnessContent = () => {
   return (
-    <div className="w-full p-4 bg-yellow-100 mt-10">
-      <h2 className="text-2xl font-bold mb-4">Mindfulness and Productivity</h2>
-      <p>
-        Mindfulness is a powerful tool for enhancing your productivity and focus. By being
-        fully present in the moment, you can reduce stress, improve decision-making, and
-        increase your overall well-being.
+    <div className="w-full p-6 bg-yellow-100 rounded-md mt-10 shadow-md">
+      <h2 className="text-3xl font-extrabold text-gray-800 mb-6">Mindfulness and Productivity</h2>
+      <p className="text-lg text-gray-700 leading-relaxed">
+        Mindfulness is a transformative practice that sharpens focus, enhances productivity, 
+        and brings a sense of calm to even the busiest of days. By being fully present in 
+        each moment, you can make better decisions, reduce stress, and achieve your goals 
+        with more ease and clarity.
       </p>
-      <p className="mt-4">
-        Explore our mindfulness page to learn more about how to integrate mindfulness into
-        your daily routine and achieve your goals with clarity and calmness.
+      <p className="text-lg text-gray-700 leading-relaxed mt-4">
+        Taking just a few minutes each day to practice mindfulness can help you regain control 
+        of your thoughts and actions, preventing burnout and keeping your energy levels high. 
+        Whether through meditation, mindful breathing, or simply focusing on a task without 
+        distraction, these small habits can lead to big changes.
       </p>
+      <blockquote className="mt-6 p-4 italic font-light border-l-4 border-yellow-500 bg-yellow-50">
+        "The mind is everything. What you think, you become." — Buddha
+      </blockquote>
+      <p className="text-lg text-gray-700 leading-relaxed mt-4">
+        Explore our mindfulness resources and learn how to incorporate these techniques into 
+        your daily routine to enhance your productivity while nurturing your mental well-being. 
+        Remember, staying calm and focused today leads to greater achievements tomorrow.
+      </p>
+      <div className="mt-6">
+        <a 
+          href="/mindfulness"
+          className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-lg hover:bg-blue-700"
+        >
+          Learn More About Mindfulness
+        </a>
+      </div>
     </div>
   );
 };
 
 export default MindfulnessContent;
+

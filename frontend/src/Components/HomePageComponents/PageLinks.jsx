@@ -3,33 +3,33 @@ import { Link } from 'react-router-dom';
 
 const PageLinks = () => {
   return (
-    <div className="w-full p-4 flex flex-col items-center space-y-6">
-      <div className="text-center p-4 border rounded-lg shadow-lg bg-white w-full max-w-md">
-        <h3 className="text-xl font-semibold mb-2">Mindfulness</h3>
-        <p className="text-gray-700 mb-4">
+    <div className="w-full p-8 flex flex-col items-center space-y-8">
+      <div className="text-center p-6 border rounded-lg shadow-lg bg-beige w-full max-w-2xl">
+        <h3 className="text-2xl font-semibold mb-4 text-orange">Mindfulness</h3>
+        <p className="text-gray-700 mb-6">
           Discover tips and practices to improve your mindfulness and productivity.
         </p>
-        <Link to="/mindfulness" className="text-blue-500 underline">
+        <Link to="/mindfulness" className="inline-block px-6 py-3 bg-backgroundBtn text-white rounded-lg hover:bg-backgroundBtnCorrect transition duration-300 text-lg">
           Go to Mindfulness Page
         </Link>
       </div>
 
-      <div className="text-center p-4 border rounded-lg shadow-lg bg-white w-full max-w-md">
-        <h3 className="text-xl font-semibold mb-2">Task Form</h3>
-        <p className="text-gray-700 mb-4">
+      <div className="text-center p-6 border rounded-lg shadow-lg bg-beige w-full max-w-2xl">
+        <h3 className="text-2xl font-semibold mb-4 text-orange">Task Form</h3>
+        <p className="text-gray-700 mb-6">
           Create new tasks and plans to manage your day-to-day activities.
         </p>
-        <Link to="/taskform-page" className="text-blue-500 underline">
+        <Link to="/taskform-page" className="inline-block px-6 py-3 bg-backgroundBtn text-white rounded-lg hover:bg-backgroundBtnCorrect transition duration-300 text-lg">
           Go to Task Form Page
         </Link>
       </div>
 
-      <div className="text-center p-4 border rounded-lg shadow-lg bg-white w-full max-w-md">
-        <h3 className="text-xl font-semibold mb-2">Chat with AI</h3>
-        <p className="text-gray-700 mb-4">
+      <div className="text-center p-6 border rounded-lg shadow-lg bg-beige w-full max-w-2xl">
+        <h3 className="text-2xl font-semibold mb-4 text-orange">Chat with AI</h3>
+        <p className="text-gray-700 mb-6">
           Get guidance and support from our AI chatbot to achieve your goals.
         </p>
-        <Link to="/chat" className="text-blue-500 underline">
+        <Link to="/chat" className="inline-block px-6 py-3 bg-backgroundBtn text-white rounded-lg hover:bg-backgroundBtnCorrect transition duration-300 text-lg">
           Go to Chat with AI Page
         </Link>
       </div>
@@ -38,4 +38,3 @@ const PageLinks = () => {
 };
 
 export default PageLinks;
-
