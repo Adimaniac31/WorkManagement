@@ -10,10 +10,10 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async ({ userId, 
   try {
     const response = await axios.get(`${BACKEND_URL}/api/task/get-tasks/${userId}/${planId}`, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return response.data; // Ensure the API returns data in { tasks: [...] } format
+    return response.data;
   } catch (error) {
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
@@ -25,24 +25,8 @@ export const fetchDailyTasks = createAsyncThunk('tasks/fetchDailyTasks', async (
   try {
     const response = await axios.get(`${BACKEND_URL}/api/task/get-daily-tasks/${userId}`, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    return response.data; // Ensure the API returns data in { tasks: [...] } format
-  } catch (error) {
-    return rejectWithValue(error.response ? error.response.data : error.message);
-  }
-});
-
-// Fetch weekly tasks for a specific user
-// In taskSlice.js
-export const fetchWeeklyTasks = createAsyncThunk('tasks/fetchWeeklyTasks', async ({ userId }, { rejectWithValue }) => {
-  const token = getToken();
-  try {
-    const response = await axios.get(`${BACKEND_URL}/api/task/get-week-tasks/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
@@ -50,18 +34,31 @@ export const fetchWeeklyTasks = createAsyncThunk('tasks/fetchWeeklyTasks', async
   }
 });
 
+// Fetch weekly tasks for a specific user
+export const fetchWeeklyTasks = createAsyncThunk('tasks/fetchWeeklyTasks', async ({ userId }, { rejectWithValue }) => {
+  const token = getToken();
+  try {
+    const response = await axios.get(`${BACKEND_URL}/api/task/get-week-tasks/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response ? error.response.data : error.message);
+  }
+});
 
 // Create a new task
 export const createTask = createAsyncThunk('tasks/createTask', async ({ userId, taskName, planId, taskType }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/task/create-task/${userId}`, 
-      { taskName, planId, taskType }, {
+    const response = await axios.post(`${BACKEND_URL}/api/task/create-task/${userId}`, { taskName, planId, taskType }, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return response.data; // Ensure the API returns data in { task: {...} } format
+    return response.data;
   } catch (error) {
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
@@ -73,31 +70,34 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async ({ userId, 
   try {
     await axios.delete(`${BACKEND_URL}/api/task/delete-task/${userId}/${taskId}`, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return taskId; // Return the taskId to delete it from the state
+    return taskId;
   } catch (error) {
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
 });
 
 // Update a task
-export const updateTask = createAsyncThunk('tasks/updateTask', async ({ userId, taskId, taskData }, { rejectWithValue }) => {
+export const updateTask = createAsyncThunk('tasks/updateTask', async ({ userId, taskId, taskName, completionStatus, taskType }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.put(`${BACKEND_URL}/api/task/update-task/${userId}/${taskId}`, 
-      { taskData }, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+    const response = await axios.post(`${BACKEND_URL}/api/task/update-task/${userId}/${taskId}`, 
+      { taskName, completionStatus, taskType }, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
-    return response.data.task; // Ensure the API returns data in { task: {...} } format
+    );
+    return response.data.task;
   } catch (error) {
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
 });
 
+// Create the task slice
 const taskSlice = createSlice({
   name: 'tasks',
   initialState: {
@@ -115,7 +115,7 @@ const taskSlice = createSlice({
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.tasks = action.payload.tasks; // Make sure the payload contains tasks array
+        state.tasks = action.payload.tasks;
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.status = 'failed';
@@ -126,7 +126,7 @@ const taskSlice = createSlice({
       })
       .addCase(fetchDailyTasks.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.dailyTasks = action.payload.tasks; // Ensure the payload contains daily tasks array
+        state.dailyTasks = action.payload.tasks;
       })
       .addCase(fetchDailyTasks.rejected, (state, action) => {
         state.status = 'failed';
@@ -137,14 +137,14 @@ const taskSlice = createSlice({
       })
       .addCase(fetchWeeklyTasks.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.weeklyTasks = action.payload.tasks; // Ensure the payload contains weekly tasks array
+        state.weeklyTasks = action.payload.tasks;
       })
       .addCase(fetchWeeklyTasks.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })
       .addCase(createTask.fulfilled, (state, action) => {
-        state.tasks.push(action.payload.task); // Ensure the payload contains a single task
+        state.tasks.push(action.payload.task);
       })
       .addCase(createTask.rejected, (state, action) => {
         state.error = action.payload;
@@ -158,7 +158,7 @@ const taskSlice = createSlice({
       .addCase(updateTask.fulfilled, (state, action) => {
         const index = state.tasks.findIndex(task => task.id === action.payload.id);
         if (index !== -1) {
-          state.tasks[index] = action.payload; // Update the task with new data
+          state.tasks[index] = action.payload;
         }
       })
       .addCase(updateTask.rejected, (state, action) => {
@@ -168,6 +168,7 @@ const taskSlice = createSlice({
 });
 
 export default taskSlice.reducer;
+
 
 
 

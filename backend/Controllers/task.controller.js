@@ -96,7 +96,7 @@ export const deleteTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   const { taskId, userId } = req.params;
-  const { taskName, completionStatus } = req.body;
+  const { taskName, completionStatus,taskType } = req.body;
 
   try {
     // Find the task by id and validate user ownership
