@@ -60,7 +60,7 @@ export const signIn = async (req, res) => {
         );
 
         if (!results || results.length === 0) {
-            return res.status(401).json("error: 'Incorrect username'" );
+            return res.status(401).json( {error: 'Incorrect username'} );
         }
 
         const user = results;
@@ -114,10 +114,7 @@ export const signIn = async (req, res) => {
 };
 
 export const signOut = async (req, res) => {
-  try {
-      // Clear the access_token from local storage
-      localStorage.removeItem('access_token');
-      
+  try {      
       // Send a success response
       res.status(200).json({ message: 'Sign Out Successfully!' });
   } catch (error) {
