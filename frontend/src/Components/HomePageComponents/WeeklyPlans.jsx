@@ -26,12 +26,12 @@ const WeeklyPlans = ({ plans }) => {
             <li key={plan.id} className="mb-3 text-base md:text-lg text-gray-800">
               <input
                 type="checkbox"
-                checked={plan.completionStatus} // Bind checkbox to completionStatus
+                checked={plan.completionStatus}
                 onChange={() => handleUpdatePlan(plan.id, plan.completionStatus)}
                 className="mr-3 h-5 w-5"
               />
               <span className={`text-lg ${plan.completionStatus ? 'line-through text-gray-500' : ''}`}>
-                {plan.planName}
+                {plan.taskName}
               </span>
             </li>
           ))}
@@ -46,3 +46,4 @@ const WeeklyPlans = ({ plans }) => {
 };
 
 export default WeeklyPlans;
+

@@ -1,19 +1,25 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signIn, setCharName, setPassword } from '../features/authSlice';
+import { useNavigate } from 'react-router-dom';
 import signInImage from '../assets/signup-image.webp';
 import { Link } from 'react-router-dom';
 
 const SignInPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();  // Use navigate hook
   const { charName, password, status, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signIn({ charName, password }));
+    const result = await dispatch(signIn({ charName, password }));
+    
+    if (result.meta.requestStatus === 'fulfilled') {
+      navigate('/');  // Redirect to home on successful sign-in
+    }
   };
 
-  const errorMessage = JSON.stringify(error.error);
+  const errorMessage = JSON.stringify(error?.error);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center p-4 bg-gray-200">
@@ -64,11 +70,11 @@ const SignInPage = () => {
               Sign In
             </button>
           </div>
-          <div className='flex items-center flex-col justify-start gap-2'>
+          <div className="flex items-center flex-col justify-start gap-2">
             Do not have an account?
             <Link to="/signup">
               <button
-                className='bg-orange hover:bg-darkPink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+                className="bg-orange hover:bg-darkPink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
                 Sign Up
               </button>

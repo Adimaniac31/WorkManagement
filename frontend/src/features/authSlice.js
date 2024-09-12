@@ -1,19 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Define initial state
 const initialState = {
   charName: '',
   password: '',
-  feeling: localStorage.getItem('feeling') || '', // Read feeling from localStorage
+  feeling: localStorage.getItem('feeling') || '',
   userId: localStorage.getItem('userId') || '',
-  status: 'idle',
+  status: 'idle',  // This will track the overall status
   error: ''
 };
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-// Define async thunk for signup
 export const signUp = createAsyncThunk('auth/signUp', async (userData, { rejectWithValue }) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/auth/signup`, userData);
@@ -30,7 +28,7 @@ export const signIn = createAsyncThunk('auth/signIn', async (userData, { rejectW
   try {
     const response = await axios.post(`${BACKEND_URL}/api/auth/signin`, userData, { withCredentials: true });
     localStorage.setItem('access_token', response.data.token);
-    localStorage.setItem('feeling', response.data.user.feeling); // Save feeling to localStorage
+    localStorage.setItem('feeling', response.data.user.feeling);
     return response.data;
   } catch (err) {
     if (err.response && err.response.data) {
@@ -40,7 +38,35 @@ export const signIn = createAsyncThunk('auth/signIn', async (userData, { rejectW
   }
 });
 
-// Create slice
+export const signOut = createAsyncThunk('auth/signOut', async (_, { rejectWithValue }) => {
+  try {
+    await axios.get(`${BACKEND_URL}/api/auth/signout`);
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('feeling');
+    localStorage.removeItem('userId');
+    return;
+  } catch (err) {
+    return rejectWithValue(err.message);
+  }
+});
+
+export const deleteUser = createAsyncThunk('auth/deleteUser', async (userId, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('access_token');
+    await axios.delete(`${BACKEND_URL}/api/auth/delete-user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('feeling');
+    localStorage.removeItem('userId');
+    return;
+  } catch (err) {
+    return rejectWithValue(err.message);
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -53,17 +79,10 @@ const authSlice = createSlice({
     },
     setFeelings(state, action) {
       state.feeling = action.payload;
-      localStorage.setItem('feeling', action.payload); // Save feeling to localStorage
+      localStorage.setItem('feeling', action.payload);
     },
     clearError(state) {
       state.error = '';
-    },
-    signOut(state) {
-      state.userId = '';
-      state.feeling = ''; // Clear feeling
-      localStorage.removeItem('userId');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('feeling'); // Remove feeling from localStorage
     }
   },
   extraReducers: (builder) => {
@@ -71,7 +90,7 @@ const authSlice = createSlice({
       .addCase(signUp.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(signUp.fulfilled, (state, action) => {
+      .addCase(signUp.fulfilled, (state) => {
         state.status = 'succeeded';
       })
       .addCase(signUp.rejected, (state, action) => {
@@ -90,13 +109,34 @@ const authSlice = createSlice({
       .addCase(signIn.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
+      })
+      .addCase(signOut.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(signOut.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.userId = '';
+        state.feeling = '';
+      })
+      .addCase(signOut.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.status = 'loading';  // Set status to loading when deleteUser is pending
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.status = 'succeeded';  // Set status to succeeded when deleteUser is fulfilled
+        state.userId = '';
+        state.feeling = '';
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
   }
 });
 
-export const { setCharName, setPassword, setFeelings, clearError, signOut } = authSlice.actions;
+export const { setCharName, setPassword, setFeelings, clearError } = authSlice.actions;
 
 export default authSlice.reducer;
-
-
-

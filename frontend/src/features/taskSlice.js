@@ -20,6 +20,7 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async ({ userId, 
 });
 
 // Fetch daily tasks for a specific user
+// Fetch daily tasks for a specific user
 export const fetchDailyTasks = createAsyncThunk('tasks/fetchDailyTasks', async ({ userId }, { rejectWithValue }) => {
   const token = getToken();
   try {
@@ -28,8 +29,11 @@ export const fetchDailyTasks = createAsyncThunk('tasks/fetchDailyTasks', async (
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data; // Ensure it returns an array
   } catch (error) {
+    if (error.response.status === 404) {
+      return []; // Return an empty array on 404
+    }
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
 });
@@ -43,11 +47,15 @@ export const fetchWeeklyTasks = createAsyncThunk('tasks/fetchWeeklyTasks', async
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data; // Ensure it returns an array
   } catch (error) {
+    if (error.response.status === 404) {
+      return []; // Return an empty array on 404
+    }
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
 });
+
 
 // Create a new task
 export const createTask = createAsyncThunk('tasks/createTask', async ({ userId, taskName, planId, taskType }, { rejectWithValue }) => {

@@ -25,7 +25,7 @@ const DailyTasks = ({ tasks }) => {
           <div key={task.id} className="flex items-center mb-4">
             <input
               type="checkbox"
-              checked={task.completionStatus} // Ensure it's based on the actual completion status
+              checked={task.completionStatus}
               onChange={() => handleUpdateTask(task.id, task.completionStatus)}
               className="mr-3 h-5 w-5"
             />

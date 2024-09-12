@@ -1,19 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signUp, setCharName, setPassword, setFeelings } from '../features/authSlice';
+import { useNavigate } from 'react-router-dom';
 import signUpImage from '../assets/signup-image.webp';
 import { Link } from 'react-router-dom';
 
 const SignUpPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();  // Use navigate hook
   const { charName, password, feeling, status, error } = useSelector((state) => state.auth);
+  const [showSavePasswordReminder, setShowSavePasswordReminder] = useState(false);  // Track if sign-up is successful
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signUp({ charName, password, feeling }));
+    const result = await dispatch(signUp({ charName, password, feeling }));
+
+    if (result.meta.requestStatus === 'fulfilled') {
+      setShowSavePasswordReminder(true);  // Show password save reminder
+      setTimeout(() => {
+        navigate('/signin');
+      }, 5000);  // Wait 5 seconds before redirecting
+    }
   };
 
-  const errorMessage = JSON.stringify(error.error);
+  const errorMessage = JSON.stringify(error?.error);
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center p-4 bg-gray-200">
       {/* Image Section */}
@@ -75,11 +86,11 @@ const SignUpPage = () => {
               Sign Up
             </button>
           </div>
-          <div className='flex items-center flex-col justify-start gap-2'>
+          <div className="flex items-center flex-col justify-start gap-2">
             Already have an account?
             <Link to="/signin">
               <button
-                className='bg-orange hover:bg-darkPink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+                className="bg-orange hover:bg-darkPink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
                 Sign In
               </button>
@@ -92,13 +103,19 @@ const SignUpPage = () => {
             </p>
           )}
         </form>
+
+        {/* Reminder to save password */}
+        {showSavePasswordReminder && (
+          <div className="mt-4 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
+            <p className="text-yellow-800">
+              Your account has been created successfully! Please make sure to save your password in a secure location.
+              You will be redirected to the signin page shortly.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default SignUpPage;
-
-
-
-

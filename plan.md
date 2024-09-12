@@ -1,4 +1,4 @@
 homepage ui👍👍
 update functionality in homepage ui 👍👍
-mindfulness page
-navbar
+navbar👍👍
+mindfulness page with functionlaity to update today's tasks

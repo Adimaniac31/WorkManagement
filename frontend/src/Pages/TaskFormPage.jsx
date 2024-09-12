@@ -5,6 +5,7 @@ import { createTask } from '../features/taskSlice';
 import Plan from '../Components/TaskFormPageComponents/Plan';
 import CreatePlan from '../Components/TaskFormPageComponents/CreatePlan';
 import CreateTask from '../Components/TaskFormPageComponents/CreateTask';
+import SignInPrompt from '../Components/Common/SignInPrompt'; // Import the SignInPrompt component
 
 const TaskFormPage = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const TaskFormPage = () => {
   const [isCreatingTask, setIsCreatingTask] = useState(false);
   const [formError, setFormError] = useState(null);
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId'); // Get userId from localStorage
   const plans = useSelector(state => state.plans.plans);
   const planStatus = useSelector(state => state.plans.status);
   const error = useSelector(state => state.plans.error);
@@ -67,11 +68,15 @@ const TaskFormPage = () => {
     setFormError(null);
   };
 
+  if (!userId) {
+    // If the user is not signed in, display the SignInPrompt
+    return <SignInPrompt />;
+  }
+
   return (
     <div className="min-h-screen p-6 bg-background">
       {isCreatingPlan ? (
-        <CreatePlan onCreatePlan={handleCreatePlan} onClose={handleCloseCreatePlan}
-        />
+        <CreatePlan onCreatePlan={handleCreatePlan} onClose={handleCloseCreatePlan} />
       ) : (
         <button
           onClick={() => setIsCreatingPlan(true)}
@@ -88,7 +93,7 @@ const TaskFormPage = () => {
       {formError && <div className="text-center text-red-700 font-semibold mb-4">{formError}</div>}
 
       <div className="flex flex-col flex-start mt-6 gap-2">
-      <h1 className='text-2xl font-bold text-black mb-2 font-serif'>Your Plans :</h1>
+        <h1 className="text-2xl font-bold text-black mb-2 font-serif">Your Plans:</h1>
         {planStatus === 'loading' && <div className="text-center text-gray-700 font-medium">Loading...</div>}
         {planStatus === 'failed' && <div className="text-center text-red-700 font-medium">Error: {error}</div>}
         {plans.length === 0 && planStatus === 'succeeded' && (
@@ -96,11 +101,7 @@ const TaskFormPage = () => {
         )}
         {plans.map(plan => (
           <div key={plan.id} className="mb-6 w-full">
-            <Plan
-              id={plan.id}
-              plan={plan}
-              userId={userId}
-            />
+            <Plan id={plan.id} plan={plan} userId={userId} />
           </div>
         ))}
       </div>
