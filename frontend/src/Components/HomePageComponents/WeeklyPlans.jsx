@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { updateTask } from '../../features/taskSlice';
+import { updateTask,fetchWeeklyTasks } from '../../features/taskSlice';
 
 const WeeklyPlans = ({ plans }) => {
   const dispatch = useDispatch();
@@ -12,6 +12,7 @@ const WeeklyPlans = ({ plans }) => {
       completionStatus: !completionStatus, // Toggle the completion status
       taskType: "week" // Specify that this is a weekly plan
     }));
+    // dispatch(fetchWeeklyTasks);
   };
 
   return (

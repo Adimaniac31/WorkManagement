@@ -133,12 +133,12 @@ export const updateTask = async (req, res) => {
     );
 
     if (taskType === 'daily') {
-      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      // const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
       const [duplicateTask] = await DuplicateTask.findAll({
         where: {
           taskId: taskId,
-          date: today
+          // date: today
         }
       });
 
@@ -170,6 +170,64 @@ export const updateTask = async (req, res) => {
   }
 };
 
+export const updateTodaysTasks = async (req, res) => {
+  const { taskId } = req.params; // Adjust this if taskId is in req.body
+  const { completionStatus } = req.body;
+
+  if (!taskId) {
+    return res.status(400).json({ error: 'Task ID is required' });
+  }
+
+  try {
+    // Check if the task exists
+    const [task] = await sequelize.query(
+      `SELECT * FROM duplicate_tasks WHERE id = :taskId`,
+      {
+        replacements: { taskId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    console.log(task);
+
+    if (!task || task.length === 0) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    // Update the task
+    await sequelize.query(
+      `UPDATE duplicate_tasks
+       SET completionStatus = COALESCE(:completionStatus, completionStatus),
+           updatedAt = NOW()
+       WHERE id = :taskId`,
+      {
+        replacements: {
+          taskId,
+          completionStatus: completionStatus
+        },
+        type: sequelize.QueryTypes.UPDATE
+      }
+    );
+
+    const [task2] = await sequelize.query(
+      `SELECT * FROM duplicate_tasks WHERE id = :taskId`,
+      {
+        replacements: { taskId },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    console.log(task2);
+
+
+    res.status(200).json({ message: 'Task updated successfully' });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 export const getTodaysTasks = async (req, res) => {
   const { userId } = req.params;
   const today = new Date().toISOString().slice(0, 10);  // Format as YYYY-MM-DD
@@ -177,7 +235,7 @@ export const getTodaysTasks = async (req, res) => {
   try {
 
     const result = await sequelize.query(
-      `SELECT dt.*, t.taskName, t.completionStatus FROM duplicate_tasks dt
+      `SELECT dt.*, t.taskName, dt.completionStatus FROM duplicate_tasks dt
       JOIN tasks t ON dt.taskId = t.id
       WHERE dt.date = :today AND t.planId IN (
         SELECT id FROM plans WHERE userId = :userId
@@ -189,7 +247,7 @@ export const getTodaysTasks = async (req, res) => {
     );
 
     if (result.length === 0) {
-      return res.status(404).json({ message: 'No tasks found for today.' });
+      return res.status(404).json({ message: 'No tasks found for today.',tasks: [] });
     }
 
     res.status(200).json({ tasks: result });

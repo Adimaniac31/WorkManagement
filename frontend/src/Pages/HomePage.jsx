@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { fetchPlans } from '../features/planSlice';
-import { fetchDailyTasks, fetchWeeklyTasks } from '../features/taskSlice';
+import { fetchTodaysTasks, fetchDailyTasks, fetchWeeklyTasks } from '../features/taskSlice';
+import { fetchPlans } from "../features/planSlice";
 import PlanList from '../Components/HomePageComponents/PlanList';
 import DailyTasks from '../Components/HomePageComponents/DailyTasks';
 import WeeklyPlans from '../Components/HomePageComponents/WeeklyPlans';
+import TodaysTasks from '../Components/Common/TodaysTasks'; // Import TodaysTasks component
 import SignInPrompt from '../Components/Common/SignInPrompt';
 import MindfulnessContent from '../Components/HomePageComponents/MindfulnessContent';
 import PageLinks from '../Components/HomePageComponents/PageLinks';
@@ -20,6 +20,7 @@ const HomePage = () => {
   const plans = useSelector((state) => state.plans.plans) || [];
   const dailyTasks = useSelector((state) => state.tasks.dailyTasks) || [];
   const weeklyTasks = useSelector((state) => state.tasks.weeklyTasks) || [];
+  const { tasks: todayTasks, status, error } = useSelector((state) => state.tasks); // Today's tasks
 
   const [videoSource, setVideoSource] = useState(dailyTasksGif);
 
@@ -28,6 +29,7 @@ const HomePage = () => {
       dispatch(fetchPlans({ userId }));
       dispatch(fetchDailyTasks({ userId }));
       dispatch(fetchWeeklyTasks({ userId }));
+      dispatch(fetchTodaysTasks({ userId })); // Fetch today's tasks
     }
   }, [dispatch, userId]);
 
@@ -56,18 +58,29 @@ const HomePage = () => {
       <div className="flex-1 md:pr-8 space-y-16">
         {userId ? (
           <>
+            {/* Today's Tasks */}
+            <section id="todaysTasks" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('dailyTasks')}>
+              <div className="w-full max-w-3xl mx-auto">
+                <h2 className="text-xl font-semibold mb-4">Today's Tasks</h2>
+                <TodaysTasks tasks={todayTasks} status={status} error={error} />
+              </div>
+            </section>
+
+            {/* Daily Tasks */}
             <section id="dailyTasks" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('dailyTasks')}>
               <div className="w-full max-w-3xl mx-auto">
                 <DailyTasks tasks={dailyTasks} />
               </div>
             </section>
 
+            {/* Weekly Plans */}
             <section id="weeklyPlans" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('weeklyPlans')}>
               <div className="w-full max-w-3xl mx-auto">
                 <WeeklyPlans plans={weeklyTasks} />
               </div>
             </section>
 
+            {/* Plan List */}
             <section id="planList" className="flex flex-col mb-16" onMouseEnter={() => handleSectionChange('planList')}>
               <div className="w-full max-w-3xl mx-auto">
                 <PlanList plans={plans} />
@@ -80,9 +93,6 @@ const HomePage = () => {
                 <p className="text-xl">
                   Start by creating a task or plan to manage your activities. 
                 </p>
-                <Link to="/taskform-page" className="mt-2 inline-block px-6 py-3 bg-backgroundBtn text-white rounded-lg hover:bg-backgroundBtnCorrect transition-colors duration-300 text-base md:text-lg">
-                    Go to Task Form Page
-                </Link>
               </div>
             )}
           </>

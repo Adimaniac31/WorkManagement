@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { updateTask } from '../../features/taskSlice';
+import { updateTask, fetchDailyTasks } from '../../features/taskSlice';
 
 const DailyTasks = ({ tasks }) => {
   const dispatch = useDispatch();
@@ -12,6 +12,7 @@ const DailyTasks = ({ tasks }) => {
       completionStatus: !completionStatus, // Toggle the completion status
       taskType: "daily"
     }));
+    tasks = dispatch(fetchDailyTasks());
   };
 
   return (

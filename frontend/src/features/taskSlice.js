@@ -105,6 +105,42 @@ export const updateTask = createAsyncThunk('tasks/updateTask', async ({ userId, 
   }
 });
 
+// Fetch today's tasks for a specific user
+export const fetchTodaysTasks = createAsyncThunk('tasks/fetchTodaysTasks', async ({ userId }, { rejectWithValue }) => {
+  const token = getToken();
+  try {
+    const response = await axios.get(`${BACKEND_URL}/api/task/get-todays-tasks/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response.data);
+    return response.data.tasks; // Ensure that the backend returns today's tasks in an array
+  } catch (error) {
+    if (error.response.status === 404) {
+      return []; // Return an empty array on 404
+    }
+    return rejectWithValue(error.response ? error.response.data : error.message);
+  }
+});
+// Update today's task
+export const updateTodaysTask = createAsyncThunk('tasks/updateTodaysTask', async ({ userId, taskId, completionStatus }, { rejectWithValue }) => {
+  const token = getToken();
+  try {
+    const response = await axios.post(`${BACKEND_URL}/api/task/update-todays-tasks/${userId}/${taskId}`, 
+      { completionStatus }, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // Adjust based on your backend response
+  } catch (error) {
+    return rejectWithValue(error.response ? error.response.data : error.message);
+  }
+});
+
 // Create the task slice
 const taskSlice = createSlice({
   name: 'tasks',
@@ -170,6 +206,24 @@ const taskSlice = createSlice({
         }
       })
       .addCase(updateTask.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(fetchTodaysTasks.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchTodaysTasks.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.tasks = action.payload;
+      })
+      .addCase(fetchTodaysTasks.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(updateTodaysTask.fulfilled, (state, action) => {
+        // Update logic for today's tasks
+        state.tasks = action.payload;
+      })
+      .addCase(updateTodaysTask.rejected, (state, action) => {
         state.error = action.payload;
       });
   },
