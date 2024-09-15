@@ -1,18 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { updateTask,fetchWeeklyTasks } from '../../features/taskSlice';
+import { updateTask, fetchWeeklyTasks } from '../../features/taskSlice';
 
 const WeeklyPlans = ({ plans }) => {
   const dispatch = useDispatch();
 
-  const handleUpdatePlan = (planId, completionStatus) => {
-    dispatch(updateTask({
+  const handleUpdatePlan = async (planId, completionStatus) => {
+    await dispatch(updateTask({
       userId: localStorage.getItem('userId'),
       taskId: planId,
       completionStatus: !completionStatus, // Toggle the completion status
       taskType: "week" // Specify that this is a weekly plan
     }));
-    // dispatch(fetchWeeklyTasks);
+    dispatch(fetchWeeklyTasks({ userId: localStorage.getItem('userId') }));
   };
 
   return (
@@ -22,29 +22,35 @@ const WeeklyPlans = ({ plans }) => {
         "A goal without a plan is just a wish." Make sure you're on track this week with your plans!
       </p>
       {plans.length > 0 ? (
-        <ul className="list-disc list-inside pl-5">
+        <ul className="list-none space-y-4">
           {plans.map((plan) => (
-            <li key={plan.id} className="mb-3 text-base md:text-lg text-gray-800">
-              <input
-                type="checkbox"
-                checked={plan.completionStatus}
-                onChange={() => handleUpdatePlan(plan.id, plan.completionStatus)}
-                className="mr-3 h-5 w-5"
-              />
-              <span className={`text-lg ${plan.completionStatus ? 'line-through text-gray-500' : ''}`}>
-                {plan.taskName}
+            <li key={plan.id} className="flex flex-wrap justify-between items-center p-4 bg-white rounded shadow">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={plan.completionStatus}
+                  onChange={() => handleUpdatePlan(plan.id, plan.completionStatus)}
+                  className="mr-3 h-5 w-5"
+                />
+                <span className="text-lg">{plan.taskName}</span>
+              </div>
+              <span 
+                className={`ml-4 px-2 py-1 mt-2 md:mt-0 text-xs font-semibold rounded ${
+                  plan.completionStatus 
+                    ? 'bg-green-200 text-green-800' 
+                    : 'bg-red-200 text-red-800'
+                }`}
+              >
+                {plan.completionStatus ? 'Completed' : 'Incomplete'}
               </span>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-base md:text-lg text-gray-700">
-          No plans available for this week. Start planning to make the most of your time!
-        </p>
+        <p className="text-lg">No weekly plans. Start planning to make the most of your time!</p>
       )}
     </div>
   );
 };
 
 export default WeeklyPlans;
-

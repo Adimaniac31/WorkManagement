@@ -4,16 +4,20 @@ import { updateTodaysTask, fetchTodaysTasks } from '../../features/taskSlice'; /
 
 const TodaysTasks = ({ tasks = [], status, error }) => {
   const dispatch = useDispatch();
+  const userId = localStorage.getItem('userId');
 
   // Function to handle checkbox toggle
-  const handleCheckboxChange = (taskId, completionStatus) => {
+  const handleCheckboxChange = async (taskId, completionStatus) => {
     console.log(taskId, completionStatus);
+
     // Dispatch the updateTask action with updated completion status
-    dispatch(updateTodaysTask({ 
-      userId: localStorage.getItem('userId'),
+    await dispatch(updateTodaysTask({ 
+      userId,
       taskId,
       completionStatus: !completionStatus, 
     }));
+
+    // Refetch today's tasks after updating the task to refresh the task list
     dispatch(fetchTodaysTasks({ userId }));
   };
 
@@ -67,7 +71,3 @@ const TodaysTasks = ({ tasks = [], status, error }) => {
 };
 
 export default TodaysTasks;
-
-
-
-

@@ -12,7 +12,7 @@ const MindfulnessPage = () => {
   const { tasks, status, error } = useSelector((state) => state.tasks);
 
   useEffect(() => {
-    setFeelings(localStorage.getItem('feelings') || '');
+    setFeelings(localStorage.getItem('feeling') || '');
     if (userId) {
       dispatch(fetchTodaysTasks({ userId }));
     }

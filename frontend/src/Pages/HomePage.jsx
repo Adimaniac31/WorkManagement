@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTodaysTasks, fetchDailyTasks, fetchWeeklyTasks } from '../features/taskSlice';
 import { fetchPlans } from "../features/planSlice";
@@ -93,6 +94,9 @@ const HomePage = () => {
                 <p className="text-xl">
                   Start by creating a task or plan to manage your activities. 
                 </p>
+                <Link to="/taskform-page" className="inline-block px-6 py-3 bg-backgroundBtn text-white rounded-lg hover:bg-backgroundBtnCorrect transition-colors duration-300 text-base md:text-lg">
+                  Go to Task Form Page
+                </Link>
               </div>
             )}
           </>

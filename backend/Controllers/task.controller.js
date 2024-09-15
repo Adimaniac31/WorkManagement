@@ -96,7 +96,7 @@ export const deleteTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   const { taskId, userId } = req.params;
-  const { taskName, completionStatus,taskType } = req.body;
+  const { taskName, completionStatus, taskType } = req.body;
 
   try {
     // Find the task by id and validate user ownership
@@ -132,26 +132,17 @@ export const updateTask = async (req, res) => {
       }
     );
 
+    // If taskType is 'daily', update all duplicate tasks to have completionStatus = 1
     if (taskType === 'daily') {
-      // const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-
-      const [duplicateTask] = await DuplicateTask.findAll({
-        where: {
-          taskId: taskId,
-          // date: today
+      await sequelize.query(
+        `UPDATE duplicate_tasks 
+         SET completionStatus = 1 
+         WHERE taskId = :taskId`,
+        {
+          replacements: { taskId },
+          type: sequelize.QueryTypes.UPDATE
         }
-      });
-
-      if (duplicateTask) {
-        await DuplicateTask.update(
-          {
-            completionStatus: completionStatus || duplicateTask.completionStatus
-          },
-          {
-            where: { id: duplicateTask.id }
-          }
-        );
-      }
+      );
     }
 
     // Return the updated task
@@ -170,6 +161,7 @@ export const updateTask = async (req, res) => {
   }
 };
 
+
 export const updateTodaysTasks = async (req, res) => {
   const { taskId } = req.params; // Adjust this if taskId is in req.body
   const { completionStatus } = req.body;
@@ -187,8 +179,6 @@ export const updateTodaysTasks = async (req, res) => {
         type: sequelize.QueryTypes.SELECT
       }
     );
-
-    console.log(task);
 
     if (!task || task.length === 0) {
       return res.status(404).json({ error: 'Task not found' });
@@ -216,9 +206,6 @@ export const updateTodaysTasks = async (req, res) => {
         type: sequelize.QueryTypes.SELECT
       }
     );
-
-    console.log(task2);
-
 
     res.status(200).json({ message: 'Task updated successfully' });
   } catch (error) {
