@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    ports:
+      - "${PORT_SERVER}:${PORT_SERVER}"  # Map the container port to the host port
+    environment:
+      - HOST=${HOST}
+      - USER=${USER}
+      - PASSWORD=${PASSWORD}
+      - DATABASE=${DATABASE}
+      - PORT_DATABASE=${PORT_DATABASE}
+      - PORT_SERVER=${PORT_SERVER}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    command: npm start
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PASSWORD}
+      MYSQL_DATABASE: ${DATABASE}
+      MYSQL_USER: ${USER}
+      MYSQL_PASSWORD: ${PASSWORD}
+    ports:
+      - "${PORT_DATABASE}:${PORT_DATABASE}"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
