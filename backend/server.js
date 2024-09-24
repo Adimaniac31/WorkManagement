@@ -42,7 +42,7 @@ async function connectToDatabase() {
         console.error('Error connecting to the database:', error.message);
     }
 }
-
+// app.get('/',connectToDatabase());
 connectToDatabase();
 sync;//To create tables like users
 
