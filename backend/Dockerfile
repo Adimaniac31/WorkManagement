@@ -1,20 +1,21 @@
-# Use official Node.js LTS image
-FROM node:18
+# Dockerfile for the backend
+FROM node:14
 
-# Set the working directory in the container
-WORKDIR /app
+# Create and change to the app directory
+WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Install dependencies
 COPY package*.json ./
-
-# Install Node.js dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Install nodemon globally (if not already installed)
+RUN npm install -g nodemon
+
+# Copy the rest of your application code
 COPY . .
 
-# Expose the port that the server will run on
-EXPOSE ${PORT_SERVER}
+# Expose the application port (if necessary)
+EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["nodemon", "server.js"]
