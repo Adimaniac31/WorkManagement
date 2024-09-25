@@ -17,7 +17,7 @@ services:
         condition: service_healthy  # Ensure MySQL is ready before starting the backend
     volumes:
       - .:/usr/src/app
-    command: ["./wait-for-it.sh", "db:${PORT_DATABASE}", "--", "npm", "start"]  # Wait for DB to be ready
+    command: ["sh","./wait-for-it.sh", "db:${PORT_DATABASE}", "--", "npm", "start"]  # Wait for DB to be ready
 
   db:
     image: mysql:8
