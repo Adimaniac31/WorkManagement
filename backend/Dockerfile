@@ -13,12 +13,12 @@ RUN npm install -g nodemon
 # Copy the rest of your application code
 COPY . .
 
-# Expose the application port
-EXPOSE ${PORT_SERVER}
-
-# Add wait-for-it script to ensure MySQL is ready
+# Download wait-for-it script to wait for MySQL
 ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /usr/src/app/wait-for-it.sh
 RUN chmod +x /usr/src/app/wait-for-it.sh
 
-# Start the application with nodemon
-CMD ["./wait-for-it.sh", "db:${PORT_DATABASE}", "--", "npm", "start"]
+# Expose the application port
+EXPOSE ${PORT_SERVER}
+
+# Start the application with wait-for-it
+CMD ["./wait-for-it.sh", "db:${PORT_DATABASE}", "--timeout=30", "--strict", "--", "npm", "start"]
