@@ -1,4 +1,3 @@
-# Dockerfile for the backend
 FROM node:14
 
 # Create and change to the app directory
@@ -14,8 +13,12 @@ RUN npm install -g nodemon
 # Copy the rest of your application code
 COPY . .
 
-# Expose the application port (if necessary)
-EXPOSE 3000
+# Expose the application port
+EXPOSE ${PORT_SERVER}
 
-# Start the application
-CMD ["nodemon", "server.js"]
+# Add wait-for-it script to ensure MySQL is ready
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+# Start the application with nodemon
+CMD ["npm", "start"]
