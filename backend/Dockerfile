@@ -17,8 +17,8 @@ COPY . .
 EXPOSE ${PORT_SERVER}
 
 # Add wait-for-it script to ensure MySQL is ready
-ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /usr/src/app/wait-for-it.sh
+RUN chmod +x /usr/src/app/wait-for-it.sh
 
 # Start the application with nodemon
-CMD ["npm", "start"]
+CMD ["./wait-for-it.sh", "db:${PORT_DATABASE}", "--", "npm", "start"]
