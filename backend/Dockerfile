@@ -26,4 +26,5 @@ EXPOSE ${PORT_SERVER}
 RUN ls -la /usr/src/app/wait-for-it.sh
 
 # Start the application using wait-for-it
-CMD ["./wait-for-it.sh", "db:${PORT_DATABASE}", "--timeout=30", "--strict", "--", "npm", "start"]
+CMD ["sh", "./wait-for-it.sh", "db:${PORT_DATABASE}", "--timeout=30", "--strict", "--", "npm", "start"]
+
