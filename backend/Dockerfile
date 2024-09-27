@@ -14,7 +14,9 @@ RUN npm install -g nodemon
 COPY . .
 
 # Download wait-for-it script to wait for MySQL
-RUN curl -o /usr/src/app/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+RUN curl -o /usr/src/app/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+    ls -la /usr/src/app/wait-for-it.sh
+RUN cat usr/src/app/wait-for-it.sh
 
 # Ensure the script is executable
 RUN chmod +x /usr/src/app/wait-for-it.sh
