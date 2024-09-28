@@ -9,11 +9,13 @@ fix daily tasks bug👍👍
 fix bug that it shows no todays task after updation👍👍👍👍
 use devops concept on this
 
-create aws ec2 instance
-setup docker
-setup docker-compose
-install git
-install mysql container
-write dockerfile to install node and to start node
-write docker-compose.yml to start mysql
-run containers always
+create aws ec2 instance👍👍
+setup docker👍👍
+setup docker-compose 👍👍
+install git 👍👍
+install mysql container 👍👍
+write dockerfile to install node and to start node 👍👍
+write docker-compose.yml to start mysql 👍👍
+run containers always 👍👍
+
+setup nginx to fix issue of mixed content from https to http
