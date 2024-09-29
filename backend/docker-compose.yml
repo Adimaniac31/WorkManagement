@@ -44,7 +44,7 @@ services:
       - "${PORT_NGINX_HTTP}:${PORT_NGINX_HTTP}"     # HTTP
       - "${PORT_NGINX_HTTPS}:${PORT_NGINX_HTTPS}"   # HTTPS
     volumes:
-      - ./certs:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend    
 
