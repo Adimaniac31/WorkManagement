@@ -4,9 +4,8 @@ FROM nginx:alpine
 # Copy custom Nginx configuration to container
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 80 for HTTP and 443 for HTTPS
-EXPOSE 80
-EXPOSE 443
+EXPOSE ${PORT_NGINX_HTTP}
+EXPOSE ${PORT_NGINX_HTTPS}
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
