@@ -8,7 +8,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async ({ userId, planId }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.get(`${BACKEND_URL}/api/task/get-tasks/${userId}/${planId}`, {
+    const response = await axios.get(`${BACKEND_URL}api/task/get-tasks/${userId}/${planId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -22,7 +22,7 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async ({ userId, 
 export const fetchDailyTasks = createAsyncThunk('tasks/fetchDailyTasks', async ({ userId }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.get(`${BACKEND_URL}/api/task/get-daily-tasks/${userId}`, {
+    const response = await axios.get(`${BACKEND_URL}api/task/get-daily-tasks/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -40,7 +40,7 @@ export const fetchDailyTasks = createAsyncThunk('tasks/fetchDailyTasks', async (
 export const fetchWeeklyTasks = createAsyncThunk('tasks/fetchWeeklyTasks', async ({ userId }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.get(`${BACKEND_URL}/api/task/get-week-tasks/${userId}`, {
+    const response = await axios.get(`${BACKEND_URL}api/task/get-week-tasks/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -59,7 +59,7 @@ export const fetchWeeklyTasks = createAsyncThunk('tasks/fetchWeeklyTasks', async
 export const createTask = createAsyncThunk('tasks/createTask', async ({ userId, taskName, planId, taskType }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/task/create-task/${userId}`, { taskName, planId, taskType }, {
+    const response = await axios.post(`${BACKEND_URL}api/task/create-task/${userId}`, { taskName, planId, taskType }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -74,7 +74,7 @@ export const createTask = createAsyncThunk('tasks/createTask', async ({ userId, 
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async ({ userId, taskId }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    await axios.delete(`${BACKEND_URL}/api/task/delete-task/${userId}/${taskId}`, {
+    await axios.delete(`${BACKEND_URL}api/task/delete-task/${userId}/${taskId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -89,7 +89,7 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async ({ userId, 
 export const updateTask = createAsyncThunk('tasks/updateTask', async ({ userId, taskId, taskName, completionStatus, taskType }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/task/update-task/${userId}/${taskId}`, 
+    const response = await axios.post(`${BACKEND_URL}api/task/update-task/${userId}/${taskId}`, 
       { taskName, completionStatus, taskType }, 
       {
         headers: {
@@ -107,7 +107,7 @@ export const updateTask = createAsyncThunk('tasks/updateTask', async ({ userId, 
 export const fetchTodaysTasks = createAsyncThunk('tasks/fetchTodaysTasks', async ({ userId }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.get(`${BACKEND_URL}/api/task/get-todays-tasks/${userId}`, {
+    const response = await axios.get(`${BACKEND_URL}api/task/get-todays-tasks/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -125,7 +125,7 @@ export const fetchTodaysTasks = createAsyncThunk('tasks/fetchTodaysTasks', async
 export const updateTodaysTask = createAsyncThunk('tasks/updateTodaysTask', async ({ userId, taskId, completionStatus }, { rejectWithValue }) => {
   const token = getToken();
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/task/update-todays-tasks/${userId}/${taskId}`, 
+    const response = await axios.post(`${BACKEND_URL}api/task/update-todays-tasks/${userId}/${taskId}`, 
       { completionStatus }, 
       {
         headers: {

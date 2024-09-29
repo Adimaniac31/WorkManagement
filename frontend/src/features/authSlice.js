@@ -14,7 +14,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const signUp = createAsyncThunk('auth/signUp', async (userData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/auth/signup`, userData);
+    const response = await axios.post(`${BACKEND_URL}api/auth/signup`, userData);
     return response.data;
   } catch (err) {
     if (err.response && err.response.data) {
@@ -26,7 +26,7 @@ export const signUp = createAsyncThunk('auth/signUp', async (userData, { rejectW
 
 export const signIn = createAsyncThunk('auth/signIn', async (userData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/auth/signin`, userData, { withCredentials: true });
+    const response = await axios.post(`${BACKEND_URL}api/auth/signin`, userData, { withCredentials: true });
     localStorage.setItem('access_token', response.data.token);
     localStorage.setItem('feeling', response.data.user.feeling);
     return response.data;
@@ -40,7 +40,7 @@ export const signIn = createAsyncThunk('auth/signIn', async (userData, { rejectW
 
 export const signOut = createAsyncThunk('auth/signOut', async (_, { rejectWithValue }) => {
   try {
-    await axios.get(`${BACKEND_URL}/api/auth/signout`);
+    await axios.get(`${BACKEND_URL}api/auth/signout`);
     localStorage.removeItem('access_token');
     localStorage.removeItem('feeling');
     localStorage.removeItem('userId');
@@ -53,7 +53,7 @@ export const signOut = createAsyncThunk('auth/signOut', async (_, { rejectWithVa
 export const deleteUser = createAsyncThunk('auth/deleteUser', async (userId, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem('access_token');
-    await axios.delete(`${BACKEND_URL}/api/auth/delete-user/${userId}`, {
+    await axios.delete(`${BACKEND_URL}api/auth/delete-user/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
