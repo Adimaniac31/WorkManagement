@@ -1,5 +1,4 @@
 import { HfInference } from '@huggingface/inference';
-import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 
 dotenv.config();
