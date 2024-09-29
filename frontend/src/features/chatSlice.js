@@ -8,7 +8,7 @@ export const sendMessage = createAsyncThunk(
   'chats/sendMessage',
   async (message, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}api/msg/chat`, { userMessage: message });
+      const response = await axios.post(`${BACKEND_URL}/api/msg/chat`, { userMessage: message });
       return response.data;
     } catch (error) {
       // Handle different types of errors (network error, server error, etc.)

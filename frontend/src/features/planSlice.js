@@ -8,7 +8,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const createPlan = createAsyncThunk('plans/createPlan', async ({ userId, planType, planName }) => {
   const token = getToken();
   try {
-    const response = await axios.post(`${BACKEND_URL}api/plan/create-plan/${userId}`, { planType, planName }, {
+    const response = await axios.post(`${BACKEND_URL}/api/plan/create-plan/${userId}`, { planType, planName }, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -22,7 +22,7 @@ export const createPlan = createAsyncThunk('plans/createPlan', async ({ userId, 
 export const deletePlan = createAsyncThunk('plans/deletePlan', async ({ userId, planId }) => {
   const token = getToken();
   try {
-    await axios.delete(`${BACKEND_URL}api/plan/delete-plan/${userId}/${planId}`, {
+    await axios.delete(`${BACKEND_URL}/api/plan/delete-plan/${userId}/${planId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -36,7 +36,7 @@ export const deletePlan = createAsyncThunk('plans/deletePlan', async ({ userId, 
 export const fetchPlans = createAsyncThunk('plans/fetchPlans', async ({ userId }) => {
   const token = getToken();
   try {
-    const response = await axios.get(`${BACKEND_URL}api/plan/get-plans/${userId}`, {
+    const response = await axios.get(`${BACKEND_URL}/api/plan/get-plans/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
