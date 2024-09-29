@@ -1,5 +1,8 @@
 import { HfInference } from '@huggingface/inference';
+import fetch from 'node-fetch';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 export const chatWithHuggingFace = async (userMessage) => {
