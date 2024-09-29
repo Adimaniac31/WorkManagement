@@ -19,5 +19,3 @@ write docker-compose.yml to start mysql 👍👍
 run containers always 👍👍
 
 setup nginx to fix issue of mixed content from https to http 👍👍
-
-Project done 👍👍
