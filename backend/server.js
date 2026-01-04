@@ -25,10 +25,10 @@ async function connectToDatabase() {
         const query = `CREATE DATABASE IF NOT EXISTS ${process.env.DATABASE}`;
         await sequelize.query(query);
         const connection = await mysql.createConnection({
-            host: process.env.HOST,
-            user: process.env.USER,
-            password: process.env.PASSWORD,
-            database: process.env.DATABASE,
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE,
             port: process.env.PORT_DATABASE
         });
 

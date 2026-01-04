@@ -6,7 +6,11 @@ import DuplicateTask from './Models/duplicateTask.model.js';
 
 export const sync = (async () => {
   try {
-    await sequelize.sync({alter:true}); // Use { force: true } only for development
+    if (process.env.NODE_ENV === 'development') {
+      await sequelize.sync({ alter: true });
+    } else {
+      await sequelize.sync();
+    }
     console.log('Database & tables created!');
   } catch (error) {
     console.error('Error syncing database:', error);
