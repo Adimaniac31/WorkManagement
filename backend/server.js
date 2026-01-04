@@ -51,7 +51,7 @@ app.use('/api/plan',planRoutes);
 app.use('/api/msg',chatRoutes);
 
 
-const PORT = process.env.PORT_SERVER;
+const PORT = process.env.PORT;
 app.listen(PORT,() => {
     console.log(`Server running on port ${PORT}`);
 });
