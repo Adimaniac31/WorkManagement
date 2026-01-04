@@ -22,7 +22,7 @@ app.use(cors({
 async function connectToDatabase() {
     try {
         // Create the connection to the database
-        const query = `CREATE DATABASE IF NOT EXISTS ${process.env.DATABASE}`;
+        const query = `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`;
         await sequelize.query(query);
         const connection = await mysql.createConnection({
             host: process.env.DB_HOST,
